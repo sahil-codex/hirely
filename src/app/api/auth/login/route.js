@@ -1,4 +1,4 @@
-import { Sql } from "@/lib/db";
+import { sql } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import {signToken} from "@/lib/auth";
 import { NextResponse } from "next/server";
