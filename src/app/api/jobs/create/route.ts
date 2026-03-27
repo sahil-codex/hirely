@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createJobService } from "@/job.service";
 import { jwtVerify } from "jose";
-import { create } from "domain";
+
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
