@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createJobService } from "@/job.service";
+import { createJobService } from "@/services/job.service";
 import { jwtVerify } from "jose";
 
 

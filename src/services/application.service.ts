@@ -1,6 +1,6 @@
 import{
     createApplication,checkExistingApplication,
-} from "@/app/api/jobs/route";
+} from "@/repositories/application.repository";
 
 export async function applyToJobService(user:any,jobId:string){
     if(user.role!=="CANDIDATE"){
