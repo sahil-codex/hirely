@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { applyToJobService } from "@/services/application.service";
 import { jwtVerify } from "jose";
+import { getUserFromRequest } from "@/lib/getUser";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
@@ -22,6 +23,9 @@ export async function POST(req:Request){
             return NextResponse.json({error:"Unauthorized"},{status:401});
         }
         const {jobId} = await req.json();
+        if(!jobId){
+            return NextResponse.json({error:"Job ID required"},{status:400});
+        }
         const application = await applyToJobService(user,jobId);
         return NextResponse.json({application});
     }catch(err:any){
