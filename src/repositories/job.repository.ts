@@ -26,6 +26,8 @@ export async function searchJobs(filters:{
     location?:string;
     minSalary?:number;
     skills?:string[];
+    limit:number;
+    offset:number;
 }) {
     const conditions:any[]=[];
     if(filters.keyword){
@@ -46,9 +48,12 @@ export async function searchJobs(filters:{
         whereClause = sql`WHERE ${conditions.reduce((prev,curr,i)=>i===0?curr:sql`${prev} AND ${curr}`)}`;
       }
       const result = await sql`
-     SELECT * FROM jobs
+     SELECT id,title,location,salary,created_at
+     From jobs
      ${whereClause}
      ORDER BY created_at DESC
+     LIMIT ${filters.limit}
+     OFFSET ${filters.offset}
       `;
        return result;
 }
