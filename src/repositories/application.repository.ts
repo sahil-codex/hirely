@@ -12,6 +12,6 @@ export async function createApplication(userId:string,jobId:string) {
 export async function checkExistingApplication(userId:string,jobId:string){
     const result = await sql`
     SELECT*FROM applications
-    WHERE user_id = ${userId}AND job_id =${jobId}`;
+    WHERE user_id = ${userId} AND job_id = ${jobId}`;
     return result[0];
 }

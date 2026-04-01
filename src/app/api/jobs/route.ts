@@ -1,17 +1,24 @@
-import { sql } from "@/lib/db";
+import { searchJobsService } from "@/services/job.service";
+import { NextResponse } from "next/server";
 
-export async function createApplication(userId:string,jobId:string) {
-    const result= await sql`
-    INSERT INTO applications (user_id,job_id)
-    VALUES(${userId},${jobId})
-    RETURNING*`;
-    return result[0];
+export async function GET(req:Request){
+    try{
+        const {searchParams} = new URL(req.url);
+        const query ={
+            keyword:searchParams.get("keyword"),
+            location:searchParams.get("location"),
+            minSalary:searchParams.get("minSalary"),
+            skills:searchParams.get("skills"),
+            page:searchParams.get("page"),
+        };
+        const jobs = await searchJobsService(query);
+        return NextResponse.json({jobs});
+
+    }catch(err:any){
+          return NextResponse.json(
+            {error :err.message || "Something went wrong"},
+            {status:500}
+          );
+    }
     
-}
-
-export async function checkExistingApplication(userId:string,jobId:string){
-    const result = await sql`
-    SELECT*FROM applications
-    WHERE user_id = ${userId}AND job_id =${jobId}`;
-    return result[0];
 }
