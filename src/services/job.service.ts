@@ -23,7 +23,7 @@ export async function searchJobsService(query:any) {
     const limit = 10;
     const offset = (page-1)*limit;
 
-    return await searchJobs({
+    const {jobs,totalCount} =  await searchJobs({
         keyword:query.keyword,
         location:query.location,
         minSalary:query.minSalary
@@ -34,4 +34,11 @@ export async function searchJobsService(query:any) {
         offset,
     });
     
+    const totalPages = Math.ceil(totalCount / limit);
+    return {
+        jobs,
+        totalCount,
+        totalPages,
+        currentPage:page,
+    };
 }
