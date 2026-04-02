@@ -43,11 +43,15 @@ export async function searchJobs(filters:{
         conditions.push(sql`skills && ${filters.skills}`);
     }
 
-    let whereClause = sql``;
-      if(conditions.length>0){
-        whereClause = sql`WHERE ${conditions.reduce((prev,curr,i)=>i===0?curr:sql`${prev} AND ${curr}`)}`;
-      }
-      const result = await sql`
+    const whereClause =
+  conditions.length > 0
+    ? sql`WHERE ${conditions.slice(1).reduce(
+        (acc, curr) => sql`${acc} AND ${curr}`,
+        conditions[0]
+      )}`
+    : sql``;
+    
+      const jobsPromise = sql`
      SELECT id,title,location,salary,created_at
      From jobs
      ${whereClause}
@@ -55,5 +59,14 @@ export async function searchJobs(filters:{
      LIMIT ${filters.limit}
      OFFSET ${filters.offset}
       `;
-       return result;
+      const countPromise = sql`
+       SELECT COUNT(*) FROM jobs
+       ${whereClause}`;
+
+      const [jobs,countResult] = await Promise.all([
+        jobsPromise,
+        countPromise,
+      ]);
+      const totalCount = Number(countResult[0].count);
+       return  {jobs,totalCount};
 }
