@@ -1,16 +1,20 @@
 import {sql} from '@/lib/db';
 import bcrypt from 'bcryptjs';
-import { NextBuildContext } from 'next/dist/build/build-context';
 import { NextResponse } from 'next/server';
-
+import { signupSchema } from '@/validators/auth.validator';
 
 export async function POST(req:Request){
     try{
-        const{email,password,role} = await req.json();
-        
-        if(!email||!password||!role){
-            return NextResponse.json({error:'Missing fields'},{status:400});
-        }
+         const body = await req.json();
+         const parsed = signupSchema.safeParse(body);
+           if(!parsed.success){
+                return NextResponse.json(
+                {error:parsed.error.issues},
+                {status:400}
+                );
+            }
+              const {email,password,role} = parsed.data;
+
             const existingUser = await sql`
             SELECT id FROM users WHERE email = ${email.toLowerCase()}`;
             if(existingUser.length>0){
@@ -19,13 +23,7 @@ export async function POST(req:Request){
                     {status:409}
                 );
             }
-                const allowedRoles =['user'];
-                if(!allowedRoles.includes(role)){
-                    return NextResponse.json({error:'Invalid role'},{status:400});
-                }
-            
-        
-
+          
         const hashedPassword = await bcrypt.hash(password,10);
         
         const result = await sql`

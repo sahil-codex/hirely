@@ -1,0 +1,9 @@
+import { z } from "zod";
+
+export const createJobSChema = z.object({
+    title:z.string().min(3,"Title must be at least 3 characters"),
+    description:z.string().min(10,"Description too short"),
+    location:z.string().optional(),
+    salary:z.number().positive().optional(),
+    skills:z.array(z.string()).optional(),
+});
