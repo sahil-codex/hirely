@@ -2,12 +2,22 @@ import { sql } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import {signToken} from "@/lib/auth";
 import { NextResponse } from "next/server";
+import { loginSchema } from "@/validators/auth.validator";
 
-export async function POST(req){
+export async function POST(req:Request){
    try{
-    const {email,password} = await req.json();
+    const body = await req.json();
+    const parsed = loginSchema.safeParse(body);
+    if(!parsed.success){
+        return NextResponse.json(
+            {error:parsed.error.issues},
+            {status:400}
+        );
+    }
+    const {email,password} = parsed.data;
+
     const users = await sql`
-    SELECT * FROM users WHERE email = ${email.toLowerCase()}`;
+    SELECT id,email,role,password_hash FROM users WHERE email = ${email.toLowerCase()}`;
     const user = users[0];
     if(!user){
         return NextResponse.json(
@@ -17,7 +27,7 @@ export async function POST(req){
     }
     const isValid = await bcrypt.compare(password,user.password_hash);
    if(!isValid){
-    return NextResponse.json({error:'Invalid credentails'},
+    return NextResponse.json({error:'Invalid credentials'},
         {status:401}
     )
    }   
@@ -29,12 +39,13 @@ export async function POST(req){
     token,
     user:{
         id:user.id,
+        email:user.email,
         role:user.role,
     },
    });
-}catch(err){
+}catch(err:any){
     return NextResponse.json(
-        {error:err.message},
+        {error:err.message||"Something went wrong"},
         {status:500});
     }
 }
