@@ -14,6 +14,7 @@ export const jobs = pgTable("jobs",{
     description:text("description").notNull(),
     location:text("location"),
     salary:integer("salary"),
-    recruiterId: integer("recruiter_id"),
-    createAt: timestamp("created_at").defaultNow(),
+    skills:text("skills").array(),
+    recruiterId: uuid("recruiter_id"),
+    createdAt: timestamp("created_at").defaultNow(),
 })
