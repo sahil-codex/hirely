@@ -1,7 +1,7 @@
 
 import { db } from "@/lib/drizzle";
 import { jobs } from "@/db/schema";
-import { desc, arrayOverlaps,and, gte, ilike } from "drizzle-orm";
+import { count,SQL,desc, arrayOverlaps,and, gte, ilike } from "drizzle-orm";
 
 export async function createJob(data:{
     title:string;
@@ -32,7 +32,7 @@ export async function searchJobs(filters:{
     limit:number;
     offset:number;
 }) {
-    const conditions=[];
+    const conditions:SQL[]=[];
     if(filters.keyword){
         conditions.push(ilike(jobs.title, `%${filters.keyword}%`));
     }
@@ -47,7 +47,7 @@ export async function searchJobs(filters:{
     }
 
    const where = conditions.length > 0 ? and(...conditions):undefined;
-   const [jobsResult,countResult] = await Promise.all([
+    const baseQuery = 
     db
       .select({
         id:jobs.id,
@@ -57,16 +57,19 @@ export async function searchJobs(filters:{
         createdAt:jobs.createdAt,
       })
       .from(jobs)
-      .where(where)
       .orderBy(desc(jobs.createdAt))
       .limit(filters.limit)
-      .offset(filters.offset),
-
-      db
-       .select({count:db.$count(jobs)})
-       .from(jobs)
-       .where(where),
-    ]);
-      const totalCount = Number(countResult[0].count??0);
-       return  {jobs:jobsResult,totalCount};
+      .offset(filters.offset);
+      const jobsQuery = where ? baseQuery.where(where):baseQuery;
+      const countQuery = where
+       ?db.select({count:count()}).from(jobs).where(where)
+       :db.select({count:count(jobs.id)}).from(jobs);
+       const [jobsResult,countResult] = await Promise.all([
+         jobsQuery,
+         countQuery,
+       ]);
+       return {
+        jobs:jobsResult,
+        totalCount: Number(countResult[0].count??0),
+       };
 }
