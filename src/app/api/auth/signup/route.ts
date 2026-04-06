@@ -1,7 +1,10 @@
-import {sql} from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 import { signupSchema } from '@/validators/auth.validator';
+import { db } from '@/lib/drizzle';
+import { eq } from 'drizzle-orm';
+import { users } from '@/db/schema';
+
 
 export async function POST(req:Request){
     try{
@@ -15,8 +18,13 @@ export async function POST(req:Request){
             }
               const {email,password,role} = parsed.data;
 
-            const existingUser = await sql`
-            SELECT id FROM users WHERE email = ${email.toLowerCase()}`;
+            const existingUser = await db
+            .select({
+                id:users.id})
+                .from(users)
+                .where(eq(users.email,email.toLowerCase()))
+                .limit(1);
+                   
             if(existingUser.length>0){
                 return NextResponse.json(
                     {error:'User already exists'},
@@ -26,10 +34,18 @@ export async function POST(req:Request){
           
         const hashedPassword = await bcrypt.hash(password,10);
         
-        const result = await sql`
-         INSERT INTO users (email,password_hash,role)
-         VALUES (${email.toLowerCase()},${hashedPassword},${role})
-         RETURNING id,email,role`;
+        const result = await db
+         .insert(users)
+         .values({
+           email:email.toLowerCase(),
+           passwordHash:hashedPassword,
+           role,
+        })
+          .returning({
+            id:users.id,
+            email:users.email,
+            role:users.role,
+          });
         
          return NextResponse.json({user:result[0]});
         } catch(err){
