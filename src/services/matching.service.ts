@@ -17,7 +17,7 @@ export async function matchCandidatesServices(jobId:string) {
     );
     const score = matchedSkills.length*2 + (candidate.experience || 0);
     return {
-        candidateId:candidate.user_id,
+        candidateId:candidate.userId,
         name:candidate.name,
         matchedSkills,
         score,

@@ -1,4 +1,4 @@
-import { pgTable,uuid,text,integer,timestamp } from "drizzle-orm/pg-core";
+import { pgTable,uuid,text,integer,timestamp,uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id:uuid("id").defaultRandom().primaryKey(),
@@ -27,3 +27,16 @@ export const profiles = pgTable("profiles",{
   experience:integer("experience"),
 
 })
+
+export const applications = pgTable("applications",{
+  id:uuid("id").defaultRandom().primaryKey(),
+  userId:uuid("user_id").notNull(),
+  jobId:uuid("job_id").notNull(),
+  status:text("status").default("APPLIED").$type<"APPLIED"|"SHORTLISTED"|"REJECTED">(),
+  createdAt:timestamp("created_At").defaultNow(),
+  },
+  (table)=>({uniqueUserJob:uniqueIndex("unique_user_job").on(
+    table.userId,
+    table.jobId
+  ),})
+);

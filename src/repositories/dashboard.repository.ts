@@ -1,33 +1,54 @@
-import { sql } from "@/lib/db";
-
+import { db } from "@/lib/drizzle"
+import { count,eq,desc } from "drizzle-orm"
+import { jobs,applications } from "@/db/schema";
 export async function getRecruiterStats(recruiterId:string){
-    const totalJobs = await sql`
-    SELECT COUNT(*) FROM jobs
-    WHERE recruiter_id = ${recruiterId}`;
+    const totalJobsPromise =  db
+     .select({count:count(jobs.id)}) .from(jobs)
+     .where(eq(jobs.recruiterId,recruiterId));
     
-    const totalApplications = await sql`
-    SELECT COUNT(*) FROM applications a 
-    JOIN jobs ON a.job_id = j.id
-    WHERE j.recruiter_id = ${recruiterId}`;
+    const totalApplicationsPromise = db
+    .select({count:count()})
+    .from(applications)
+    .innerJoin(jobs,eq(applications.jobId,jobs.id)) 
+    .where(eq(jobs.recruiterId,recruiterId));
     
-    const applicationsPerJob = await sql`
-    SELECT j.id,j.title,COUNT(a.id) as applicatins
-    FROM jobs j
-    LEFT JOIN applications a ON j.id = a.job_id
-    WHERE j.recruiter_id = ${recruiterId}
-    GROUP BY j.id 
-    ORDER BY applications DESC`;
+    const applicationsPerJobPromise = db 
+    .select({
+        jobId:jobs.id,
+        title:jobs.title,
+        applications:count(applications.id),
+    }) 
+    .from(jobs)
+    .leftJoin(applications,eq(jobs.id,applications.jobId))
+    .where(eq(jobs.recruiterId,recruiterId))
+    .groupBy(jobs.id,jobs.title)
+    .orderBy(desc(count(applications.id)));
 
-    const statusBreakdown = await sql`
-    SELECT a.status,COUNT (*) as count
-    FROM applications a 
-    JOIN jobs j ON a.job_id = j.id
-    WHERE j.recruiter_id = ${recruiterId}
-    GROUP BY a.status`;
+    const statusBreakdownPromise = db
+     .select({
+        status:applications.status,
+        count:count(),
+    })
+    .from(applications)
+    .innerJoin(jobs,eq(applications.jobId,jobs.id))
+    .where(eq(jobs.recruiterId,recruiterId))
+    .groupBy(applications.status);
+     
+    const[
+        totalJobsResult,
+        totalApplicationsResult,
+        applicationsPerJob,
+        statusBreakdown,
 
+    ] = await Promise.all([
+        totalJobsPromise,
+        totalApplicationsPromise,
+        applicationsPerJobPromise,
+        statusBreakdownPromise,
+    ]);
     return {
-        totalJobs:totalJobs[0].count,
-        totalApplications:totalApplications[0].count,
+        totalJobs:Number(totalJobsResult[0]?.count??0),
+        totalApplications:Number(totalApplicationsResult[0]?.count??0),
         applicationsPerJob,
         statusBreakdown,
     };
