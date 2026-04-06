@@ -1,8 +1,10 @@
-import { sql } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import {signToken} from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { loginSchema } from "@/validators/auth.validator";
+import { db } from "@/lib/drizzle";
+import { eq } from "drizzle-orm";
+import { users } from "@/db/schema";
 
 export async function POST(req:Request){
    try{
@@ -16,16 +18,26 @@ export async function POST(req:Request){
     }
     const {email,password} = parsed.data;
 
-    const users = await sql`
-    SELECT id,email,role,password_hash FROM users WHERE email = ${email.toLowerCase()}`;
-    const user = users[0];
+    const result = await db
+    .select({
+        id:users.id,
+        email:users.email,
+        role:users.role,
+        passwordHash:users.passwordHash,
+    })
+    .from(users)
+    .where(eq(users.email,email.toLowerCase()))
+    .limit(1);
+    
+    const user = result[0];
+    
     if(!user){
         return NextResponse.json(
             {error:'Invalid credentials'},
             {status:401}
         )
     }
-    const isValid = await bcrypt.compare(password,user.password_hash);
+    const isValid = await bcrypt.compare(password,user.passwordHash);
    if(!isValid){
     return NextResponse.json({error:'Invalid credentials'},
         {status:401}
