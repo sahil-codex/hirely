@@ -3,7 +3,7 @@ import{
     getAllCandidates,
 } from "@/repositories/matching.repository";
 
-export async function matchCandidatesServices(jobId:string) {
+export async function matchCandidatesService(jobId:string) {
     const job = await getJobById(jobId);
     if(!job){
         throw new Error("Job not found");
