@@ -15,8 +15,24 @@ export async function POST(req:Request) {
     }
      if(user.role !=="CANDIDATE"){
         return NextResponse.json(
-            {error: err.message || "Something went wrong"},
-            {status:500 }
-        )     
+            {error: "Forbidden"},
+            {status:403 }
+        );    
      }
+     const {jobId} = await req.json();
+
+     if(!jobId){
+        return NextResponse.json(
+        {error:"Job ID required"},
+        {status:400}
+        );
+     }
+     const application = await applyToJobService(user,jobId);
+     return NextResponse.json({application});
+  } catch(err:any){
+     return NextResponse.json(
+        {error:err.message|| "Something went wrong"},
+        {status:500}
+     );
   }
+}
