@@ -4,12 +4,19 @@ import { useState } from "react"
 import { useRouter } from "next/navigation";
 
 export default function LoginPage(){
+    const router = useRouter();
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [loading,setLoading] = useState(false);
-    const router = useRouter();
+    const [error,setError] = useState("");
 
-    const handleLogin = async()=>{
+    const handleLogin = async(e:any)=>{
+      e.preventDefault();
+      setError("");
+      if(!email||!password){
+        setError("Please fill all fields");
+        return;
+      }
        setLoading(true);
        try{
         const res = await fetch("/api/auth/login",{
@@ -19,47 +26,51 @@ export default function LoginPage(){
             },
             body:JSON.stringify({email,password}),
         });
+        
       const data = await res.json();
-      if(data.token){
-        localStorage.setItem("token",data.token);
-        router.push("/jobs");
-      }else{
-        alert(data.error||"Login failed");
+      if(!res.ok){
+        setError(data.error||"Login failed");
+        return;
       }
+      localStorage.setItem("token",data.token);
+      router.push("/jobs");
      } catch(err){
-      alert("Something went wrong");
+      setError("Something went wrong");
      }finally{
       setLoading(false);
      }
     };
 
     return(
-        <div className="flex items-center justify-center min-h-screen bg-background px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary">
-            <div className="bg-card border border-border rounded-2xl p-8 w-full max-w-md shadow-lg">
+        <div className="flex items-center justify-center min-h-screen bg-background px-4 ">
+            <form onSubmit= {handleLogin} className="bg-card border border-border rounded-2xl p-8 w-full max-w-md shadow-lg">
               <h2 className="text-2xl font-semibold text-white mb-6">
               Login</h2>
+              {error && ( <p className="text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg py-2 px-3 text-sm text-center mb-4" >{error}</p>)}
             <div className="space-y-4">
             <input
               className="w-full bg-transparent border border-border rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Email"
               type="email"
+              value={email}
                disabled={loading}
-              onChange ={(e)=> setEmail(e.target.value)}
+              onChange ={(e)=> {setEmail(e.target.value); setError("");}}
              />
 
              <input
               className="w-full bg-transparent border border-border rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus-primary"
               type = "password"
               placeholder="Password"
+              value={password}
                disabled={loading}
-              onChange = {(e)=>setPassword(e.target.value)}
+              onChange = {(e)=>{setPassword(e.target.value); setError("")}}
               />
 
               <button
               className="w-full bg-primary text-white py-2 rounded-xl hover-xl hover:opacity-90 transition"
               onClick={handleLogin}  disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
         </div>
-      </div>
+      </form>
     </div>    
     );
 }
