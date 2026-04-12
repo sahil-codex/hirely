@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function SignupPage(){
+    const router = useRouter();
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [role,setRole] = useState("CANDIDATE");
@@ -27,6 +29,7 @@ export default function SignupPage(){
                 return;
             }
             alert("Signup successful 🎉");
+            router.push("/login");
             setEmail("");
             setPassword("");
             setRole("CANDIDATE");
