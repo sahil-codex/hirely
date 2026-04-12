@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage(){
     const router = useRouter();
@@ -8,8 +8,10 @@ export default function SignupPage(){
     const [password,setPassword] = useState("");
     const [role,setRole] = useState("CANDIDATE");
     const [loading,setLoading] = useState(false);
+    const [success,setSuccess] = useState("");
     const handleSignup = async (e:any) => {
         e.preventDefault();
+        setSuccess(""); 
         if(password.length<6){
             alert("Password must be at least 6 characters");
             return;
@@ -28,8 +30,10 @@ export default function SignupPage(){
                 alert(data.error ||"Something went wrong");
                 return;
             }
-            alert("Signup successful 🎉");
-            router.push("/login");
+            setSuccess("Signup successful 🎉");
+            setTimeout(()=>{
+                router.push("/login");
+            },2000);
             setEmail("");
             setPassword("");
             setRole("CANDIDATE");
@@ -46,9 +50,10 @@ export default function SignupPage(){
              <h2 className="text-2xl font-semibold text-white mb-6">
                 Sign Up
             </h2>
+            {success && ( <p className="text-green-500 text-sm mb-4 text-center">{success}</p>)}
              <div className="space-y-4">
-                <input placeholder="Email" type="email" className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary" value={email} onChange={(e)=>setEmail(e.target.value)} required/>
-                <input placeholder="Password" type = "password" value={password} className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"onChange={(e)=>setPassword(e.target.value)} required/>
+                <input placeholder="Email" type="email" className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary" value={email} onChange={(e)=>{setEmail(e.target.value);  setSuccess(""); }} required/>
+                <input placeholder="Password" type = "password" value={password} className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"onChange={(e)=>{setPassword(e.target.value); setSuccess(""); }} required/>
                 <select className="w-full bg-transparent border border-border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary" value={role} onChange={(e)=>setRole(e.target.value)}>
                     <option value="CANDIDATE">Candidate</option>
                     <option value="RECRUITER">Recruiter</option>
