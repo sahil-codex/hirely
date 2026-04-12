@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation";
 
+
 export default function LoginPage(){
     const router = useRouter();
     const [email,setEmail] = useState("");
@@ -32,8 +33,15 @@ export default function LoginPage(){
         setError(data.error||"Login failed");
         return;
       }
-      localStorage.setItem("token",data.token);
-      router.push("/jobs");
+          localStorage.setItem("token",data.token);
+          localStorage.setItem("role", data.user.role);
+          const role = data.user.role;
+  
+      if(role==="RECRUITER"){
+        router.push("/dashboard");
+      }else{
+        router.push("/jobs");
+      }
      } catch(err){
       setError("Something went wrong");
      }finally{
@@ -55,20 +63,20 @@ export default function LoginPage(){
               value={email}
                disabled={loading}
               onChange ={(e)=> {setEmail(e.target.value); setError("");}}
-             />
+              required/>
 
              <input
-              className="w-full bg-transparent border border-border rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus-primary"
+              className="w-full bg-transparent border border-border rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"
               type = "password"
               placeholder="Password"
               value={password}
                disabled={loading}
               onChange = {(e)=>{setPassword(e.target.value); setError("")}}
-              />
+               required/>
 
               <button
-              className="w-full bg-primary text-white py-2 rounded-xl hover-xl hover:opacity-90 transition"
-              onClick={handleLogin}  disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
+              className="w-full bg-primary text-white py-2 rounded-xl  hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+               type={"submit"} disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
         </div>
       </form>
     </div>    
