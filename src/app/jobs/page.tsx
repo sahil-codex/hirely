@@ -16,7 +16,7 @@ export default function JobsPage(){
         if(!res.ok){
             throw new Error("Failed to fetch jobs");
         }const data = await res.json();
-        setJobs(data.jobs ||  []);
+       setJobs(Array.isArray(data.jobs) ? data.jobs : data.jobs?.jobs || []);
     }catch(err){
         setError("Could not load jobs");
     }finally{
