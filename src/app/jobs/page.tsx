@@ -46,7 +46,7 @@ export default function JobsPage(){
                             <span className="text-primary font-semibold">
                                   ₹{job.salary||"Not disclosed"}
                                 </span>
-                        <button className="bg-primary px-4 py-1 rounded-lg text-sm">Apply</button>
+                        <button className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
                         </div>
                         </div>    
                 ))}
