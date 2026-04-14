@@ -1,5 +1,6 @@
-import {createJob} from "@/repositories/job.repository";
+import {createJob, getJobsRecruiter} from "@/repositories/job.repository";
 import {searchJobs} from "@/repositories/job.repository";
+
 
 export async function createJobService(body:any,recruiterId:string){
     const{title,description,location,salary,skills} = body;
@@ -41,4 +42,15 @@ export async function searchJobsService(query:any) {
         totalPages,
         currentPage:page,
     };
+}
+
+export async function getRecruiterjobsService(user:{
+    userId:string;
+    role:string;
+}){
+    if(user.role!=="RECRUITER"){
+        throw new Error("Only recruiters can access their jobs");
+    }
+    const jobs = await getJobsRecruiter(user.userId);
+    return jobs;
 }
