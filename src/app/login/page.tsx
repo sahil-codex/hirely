@@ -10,9 +10,10 @@ export default function LoginPage(){
     const [password,setPassword] = useState("");
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState("");
-
+   
     const handleLogin = async(e:any)=>{
       e.preventDefault();
+      console.log("LoGIN CLICKED");
       setError("");
       if(!email||!password){
         setError("Please fill all fields");
@@ -20,6 +21,7 @@ export default function LoginPage(){
       }
        setLoading(true);
        try{
+        console.log("Sending request...");
         const res = await fetch("/api/auth/login",{
             method:"POST",
             headers:{
