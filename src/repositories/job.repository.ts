@@ -1,7 +1,7 @@
 
 import { db } from "@/lib/drizzle";
 import { jobs } from "@/db/schema";
-import { count,SQL,desc, arrayOverlaps,and, gte, ilike } from "drizzle-orm";
+import { eq,count,SQL,desc, arrayOverlaps,and, gte, ilike } from "drizzle-orm";
 
 export async function createJob(data:{
     title:string;
@@ -72,4 +72,19 @@ export async function searchJobs(filters:{
         jobs:jobsResult,
         totalCount: Number(countResult[0].count??0),
        };
+}
+
+export async function getJobsRecruiter(recruiterId:string) {
+    const result = await db
+    .select({
+        id:jobs.id,
+        title:jobs.title,
+        location:jobs.location,
+        salary:jobs.salary,
+        createdAt:jobs.createdAt,
+    })
+       .from(jobs)
+       .where(eq(jobs.recruiterId,recruiterId))
+       .orderBy(desc(jobs.createdAt));
+      return result;
 }
