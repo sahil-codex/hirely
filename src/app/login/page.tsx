@@ -44,6 +44,7 @@ export default function LoginPage(){
       }else{
         router.push("/jobs");
       }
+      router.refresh();
      } catch(err){
       setError("Something went wrong");
      }finally{
