@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function DashboardPage(){
+export default function DashboardPage(){
     const [title,setTitle] = useState("");
     const [description,setDescription] = useState("");
     const [location,setLocation] = useState("");
