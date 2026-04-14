@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage(){
     const [title,setTitle] = useState("");
@@ -8,8 +8,30 @@ export default function DashboardPage(){
     const [location,setLocation] = useState("");
     const [salary,setSalary] = useState("");
     const [skills,setSkills] = useState("");
+    const [jobs, setJobs] = useState<any[]>([]);
     const [loading,setLoading] = useState(false);
+    const [loadingJobs,setLoadingJobs] = useState(true);
     const [message,setMessage] = useState("");
+
+    useEffect(()=>{
+        const fetchMyJobs = async() =>{
+            try{
+                const res = await fetch("/api/jobs/my");
+                const data = await res.json();
+
+                if(!res.ok){
+                    console.error(data.error);
+                    return;
+                }
+                setJobs(data.jobs||[]);
+            }catch(err){
+                console.error(err);
+            }finally{
+                setLoadingJobs(false);
+            }
+        };
+        fetchMyJobs();
+    },[]);
 
     const handleCreateJob = async(e:any) => {
         e.preventDefault();
@@ -41,6 +63,7 @@ export default function DashboardPage(){
             setLocation("");
             setSalary("");
             setSkills("");
+            setJobs((prev)=>[...prev,data.job]);
         }catch{
             setMessage("Something went wrong");
         }finally{
@@ -62,6 +85,24 @@ export default function DashboardPage(){
                 <button type="submit" disabled ={loading} className="w-full bg-primary py-2 rounded-xl text-white hover:opacity-90 transition">{loading ? "Creating...":"Create Job"}</button>    
             
             </form>
+            <div className="bg-card border border-border rounded-2xl p-6">
+                <h2 className="text-lg font-semibold mb-4 text-white">My Jobs</h2>
+               {loadingJobs?(
+                <p className="text-sm text-muted-foreground">Loading jobs...</p>
+               ):jobs.length===0?(
+                <p className="text-sm text-muted-foreground">No jobs posted yet.</p>
+               ):(
+                <ul className="space-y-3">
+                    {jobs.map((job,i)=>(
+                        <li key={i} className="p-3 border rounded-lg">
+                            <h3 className="font-semibold">{job.title}</h3>
+                            <p className="text-sm">{job.description}</p>
+                            <p className="text-xs text-muted-foreground">{job.location} • ₹{job.salary}</p>
+                        </li>
+                    ))}
+                </ul>
+               )}
+            </div>
         </div>
     )
 }
