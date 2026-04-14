@@ -61,6 +61,7 @@ export async function POST(req:Request){
     path:"/",
     maxAge:60*60*24*7
    });
+   return response;
 }catch(err:any){
     return NextResponse.json(
         {error:err.message||"Something went wrong"},
