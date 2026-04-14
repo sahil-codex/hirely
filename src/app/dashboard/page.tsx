@@ -57,7 +57,7 @@ export default function DashboardPage(){
                 <input placeholder="Job Title" className="input" value={title} onChange={(e)=>setTitle(e.target.value)} required />
                 <textarea className="input" placeholder="Job Description" value={description} onChange={(e)=>setDescription(e.target.value)} required />
                 <input placeholder="Location" className="input" value={location} onChange={(e)=>setLocation(e.target.value)} />
-                <input placeholder="Salary" type="number" onChange={(e)=>setSalary(e.target.value)} />
+                <input placeholder="Salary" type="number" min="0" step="1" value={salary} className="input" onChange={(e)=>setSalary(e.target.value)} />
                 <input placeholder="Skills (comma seperated)" className="input" value={skills} onChange={(e)=>setSkills(e.target.value)} />
                 <button type="submit" disabled ={loading} className="w-full bg-primary py-2 rounded-xl text-white hover:opacity-90 transition">{loading ? "Creating...":"Create Job"}</button>    
             
