@@ -5,7 +5,7 @@ import { matchQuerySchema } from "@/validators/matching.validator";
 
 export async function GET(req:Request){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
 
         if(!user || user.role !== "RECRUITER"){
             return NextResponse.json(

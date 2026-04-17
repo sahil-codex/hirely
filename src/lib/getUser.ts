@@ -1,11 +1,15 @@
 import { jwtVerify } from "jose";
-
+import {cookies} from "next/headers";
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export async function getUserFromRequest(req:Request){
-    const authHeader = req.headers.get("authorization");
-    const token = authHeader?.split(" ")[1];
+export async function getUserFromRequest(){
+    try{
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
     if(!token) return null;
     const {payload} = await jwtVerify(token,secret);
     return payload as {userId:string;role:string};
+}catch{
+    return null;
+}
 }

@@ -4,7 +4,7 @@ import { getUserFromRequest } from "@/lib/getUser";
 
 export async function GET(req:Request){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
         if(!user){
             return NextResponse.json(
                 {error:"Unauthorized"},

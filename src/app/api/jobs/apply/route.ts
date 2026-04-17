@@ -5,7 +5,7 @@ import { getUserFromRequest } from "@/lib/getUser";
 
 export async function POST(req:Request) {
     try{
-    const user = await getUserFromRequest(req);
+    const user = await getUserFromRequest();
 
     if(!user){
         return NextResponse.json(
