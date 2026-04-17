@@ -5,10 +5,10 @@ import { getUserFromRequest } from "@/lib/getUser";
 export async function GET(req:Request){
     try{
         const user = await getUserFromRequest();
-        if(!user){
+        if(!user || user.role!=="RECRUITER"){
             return NextResponse.json(
-                {error:"Unauthorized"},
-                {status:401}
+                {error:"Forbidden"},
+                {status:403}
             );
         }
         const jobs = await getRecruiterjobsService(user);
