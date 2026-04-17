@@ -12,7 +12,11 @@ export default function JobsPage(){
         try {
             setError("");
             const res = await fetch("/api/jobs/search",{
+                method:"GET",
                 credentials:"include",
+                headers:{
+                    "Content-Type":"application/json",
+                },
             });
           
         if(!res.ok){
