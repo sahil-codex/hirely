@@ -16,7 +16,9 @@ export default function DashboardPage(){
     useEffect(()=>{
         const fetchMyJobs = async() =>{
             try{
-                const res = await fetch("/api/jobs/my");
+                const res = await fetch("/api/jobs/my",{
+                    credentials:"include",
+                });
                 const data = await res.json();
 
                 if(!res.ok){

@@ -11,7 +11,9 @@ export default function JobsPage(){
      const fetchJobs = async ()=> {
         try {
             setError("");
-            const res = await fetch("/api/jobs/search");
+            const res = await fetch("/api/jobs/search",{
+                credentials:"include",
+            });
           
         if(!res.ok){
             throw new Error("Failed to fetch jobs");
