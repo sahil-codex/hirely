@@ -2,10 +2,16 @@ import { NextResponse} from "next/server";
 import { getRecruiterjobsService } from "@/services/job.service";
 import { getUserFromRequest } from "@/lib/getUser";
 
-export async function GET(req:Request){
+export async function GET(){
     try{
         const user = await getUserFromRequest();
-        if(!user || user.role!=="RECRUITER"){
+        if(!user){
+            return NextResponse.json(
+                {error:"Unauthorized"},
+                {status:401}
+            );
+        }
+        if(user.role!=="RECRUITER"){
             return NextResponse.json(
                 {error:"Forbidden"},
                 {status:403}
