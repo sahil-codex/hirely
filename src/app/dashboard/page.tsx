@@ -1,6 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+type Job = {
+  id: string;
+  title: string;
+  description?: string;
+  location?: string;
+  salary?: number | null;
+  createdAt: string;
+};
 
 export default function DashboardPage(){
     const [title,setTitle] = useState("");
@@ -8,7 +16,7 @@ export default function DashboardPage(){
     const [location,setLocation] = useState("");
     const [salary,setSalary] = useState<number | "">("");
     const [skills,setSkills] = useState("");
-    const [jobs, setJobs] = useState<any[]>([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
     const [loading,setLoading] = useState(false);
     const [loadingJobs,setLoadingJobs] = useState(true);
     const [message,setMessage] = useState("");
@@ -37,6 +45,10 @@ export default function DashboardPage(){
 
     const handleCreateJob = async(e:any) => {
         e.preventDefault();
+         if (!title.trim() || !description.trim()) {
+         setMessage("Title and description are required");
+         return;
+        }
         setMessage("");
         setLoading(true);
         try{
@@ -50,8 +62,8 @@ export default function DashboardPage(){
                     title,
                     description,
                     location,
-                    salary:Number(salary),
-                    skills:skills.split(",").map ((s)=>s.trim()),
+                    salary:salary===""?null : Number(salary),
+                    skills:skills.split(",").map ((s)=>s.trim()).filter(Boolean),
                 }),
             });
             const data = await res.json();
@@ -65,7 +77,7 @@ export default function DashboardPage(){
             setLocation("");
             setSalary("");
             setSkills("");
-            setJobs((prev)=>[...prev,data.job]);
+            setJobs((prev)=>[data.job, ...prev]);
         }catch{
             setMessage("Something went wrong");
         }finally{
@@ -103,7 +115,7 @@ export default function DashboardPage(){
                          )}
 
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
-                            <p className="text-primary text-sm mt-1"> ₹  {job.salary ? job.salary.toLocalString(): "Not specified"}</p>
+                            <p className="text-primary text-sm mt-1"> ₹  {job.salary!==null&& job.salary !==undefined ? Number(job.salary).toLocaleString(): "Not specified"}</p>
                             <p className="text-xs text-gray-500 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
                         </div>
                     ))}

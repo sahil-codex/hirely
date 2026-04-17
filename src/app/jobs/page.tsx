@@ -12,7 +12,7 @@ export default function JobsPage(){
         try {
             setError("");
             const res = await fetch("/api/jobs/search",{
-                method:"GET",
+                method:"POST",
                 credentials:"include",
                 headers:{
                     "Content-Type":"application/json",
