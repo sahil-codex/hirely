@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDashboardService } from "@/services/dashboard.service";
 import { getUserFromRequest } from "@/lib/getUser";
 
-export async function GET(){
+export async function GET(req:Request){
     try{
         const user = await getUserFromRequest();
       if(!user || user.role !=="RECRUITER"){
