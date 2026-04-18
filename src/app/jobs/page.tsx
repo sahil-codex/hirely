@@ -41,28 +41,6 @@ export default function JobsPage(){
     if(loading){
         return <p className="text-white">Loading jobs...</p>;
     }
-   const handleDelete = async (id:string)=>{
-    if (!confirm("Are you sure you want to delete this job?")) return;
-    try{
-        const res = await fetch(`/api/jobs/${id}`,{
-            method:"DELETE",
-            credentials:"include",
-        });
-        let data = null;
-        try{
-            data = await res.json();
-
-        }catch {}
-        if(!res.ok){
-            throw new Error(data.error || "Failed to delete");
-            
-        }
-        setJobs((prev)=>prev.filter((job)=>job.id!==id));
-    }catch(err:any){
-        console.error(err.message);
-        setError(err.message);
-    }
-   };
 
     return (
         <div className="space-y-6">
@@ -82,7 +60,6 @@ export default function JobsPage(){
                                   ₹{job.salary||"Not disclosed"}
                                 </span>
                         <button className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
-                        <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-sm hover:underline">DELETE</button>
                         </div>
                         </div>    
                 ))}
