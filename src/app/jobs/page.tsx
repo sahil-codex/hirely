@@ -2,8 +2,14 @@
 
 import { useEffect,useState } from "react";
 
+type Job = {
+  id: string;
+  title: string;
+  location?: string;
+  salary?: number;
+};
 export default function JobsPage(){
-    const [jobs,setJobs] = useState([]);
+    const [jobs,setJobs] = useState<Job[]>([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState("");
 
@@ -22,7 +28,8 @@ export default function JobsPage(){
         if(!res.ok){
             throw new Error("Failed to fetch jobs");
         }const result = await res.json();
-       setJobs(Array.isArray(result.jobs) ? result.jobs : result.jobs?.jobs || []);
+         const jobsData = Array.isArray(result.jobs) ? result.jobs : result.jobs?.jobs || [];
+       setJobs(jobsData as Job[]);
     }catch(err){
         setError("Could not load jobs");
     }finally{
@@ -34,6 +41,28 @@ export default function JobsPage(){
     if(loading){
         return <p className="text-white">Loading jobs...</p>;
     }
+   const handleDelete = async (id:string)=>{
+    if (!confirm("Are you sure you want to delete this job?")) return;
+    try{
+        const res = await fetch(`/api/jobs/${id}`,{
+            method:"DELETE",
+            credentials:"include",
+        });
+        let data = null;
+        try{
+            data = await res.json();
+
+        }catch {}
+        if(!res.ok){
+            throw new Error(data.error || "Failed to delete");
+            
+        }
+        setJobs((prev)=>prev.filter((job)=>job.id!==id));
+    }catch(err:any){
+        console.error(err.message);
+        setError(err.message);
+    }
+   };
 
     return (
         <div className="space-y-6">
@@ -43,7 +72,7 @@ export default function JobsPage(){
                     <p className="text-gray-400">No jobs found</p>
                 )}
                 <div className="grid gap-4">
-                {jobs.map((job:any)=>(
+                {jobs.map((job)=>(
                     <div key={job.id}
                     className="bg-card border border-border rounded-xl p-5">
                         <h2 className="text-lg text-white font-medium">{job.title}</h2>
@@ -53,6 +82,7 @@ export default function JobsPage(){
                                   ₹{job.salary||"Not disclosed"}
                                 </span>
                         <button className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
+                        <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-sm hover:underline">DELETE</button>
                         </div>
                         </div>    
                 ))}
