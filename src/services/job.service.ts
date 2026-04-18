@@ -1,6 +1,6 @@
 import {createJob, getJobsRecruiter} from "@/repositories/job.repository";
 import {searchJobs} from "@/repositories/job.repository";
-
+import { deleteJobById } from "@/repositories/job.repository";
 
 export async function createJobService(body:any,recruiterId:string){
     const{title,description,location,salary,skills} = body;
@@ -53,4 +53,22 @@ export async function getRecruiterjobsService(user:{
     }
     const jobs = await getJobsRecruiter(user.userId);
     return jobs;
+}
+
+export async function deleteJobService(
+    user: {userId: string;role:string},
+    jobId:string
+) {
+    if(user.role!=="RECRUITER"){
+        throw new Error("Only recruiters can delete jobs");
+    }
+    if(!jobId){
+        throw new Error("Job ID required");
+    }
+    const deleted = await deleteJobById(jobId,user.userId);
+
+    if(!deleted){
+        throw new Error("Job not found or unauthorized");
+    }
+    return deleted;
 }

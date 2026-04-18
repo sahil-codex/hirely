@@ -88,3 +88,16 @@ export async function getJobsRecruiter(recruiterId:string) {
        .orderBy(desc(jobs.createdAt));
       return result;
 }
+
+export async function deleteJobById(jobId:string,recruiterId:string){
+    const result = await db 
+       .delete(jobs)
+       .where(
+        and(
+            eq(jobs.id,jobId),
+            eq(jobs.recruiterId,recruiterId)
+        )
+       )
+       .returning();
+       return result[0];
+}
