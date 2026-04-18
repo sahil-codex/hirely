@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse,NextRequest } from "next/server";
 import { deleteJobService } from "@/services/job.service";
 import { getUserFromRequest } from "@/lib/getUser";
 
-export async function DELETE( req:Request,{ params }: { params: {id:string}}) 
-     {
+export async function DELETE( req:NextRequest,{ params }:{ params : {id:string }}) {
         try {
             const user = await getUserFromRequest();
             if(!user){
