@@ -84,6 +84,28 @@ export default function DashboardPage(){
             setLoading(false);
         }
     };
+    const handleDelete = async (id:string)=>{
+    if (!confirm("Are you sure you want to delete this job?")) return;
+    try{
+        const res = await fetch(`/api/jobs/${id}`,{
+            method:"DELETE",
+            credentials:"include",
+        });
+        let data = null;
+        try{
+            data = await res.json();
+
+        }catch {}
+        if(!res.ok){
+            throw new Error(data.error || "Failed to delete");
+            
+        }
+        setJobs((prev)=>prev.filter((job)=>job.id!==id));
+    }catch(err:any){
+        console.error(err.message);
+        setMessage(err.message);
+    }
+    }
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-2xl font-semibold text-white">Recruiter Dashboard</h1>
@@ -117,7 +139,9 @@ export default function DashboardPage(){
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
                             <p className="text-primary text-sm mt-1"> ₹  {job.salary!==null&& job.salary !==undefined ? Number(job.salary).toLocaleString(): "Not specified"}</p>
                             <p className="text-xs text-gray-500 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
+                                 <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-sm hover:text-red-300">DELETE</button>
                         </div>
+                        
                     ))}
                 </div>
                )}
