@@ -1,7 +1,23 @@
 import { db } from "@/lib/drizzle";
-import { applications} from "@/db/schema";
+import { applications,users} from "@/db/schema";
 import {eq,and} from "drizzle-orm";
 
+
+export async function getApplicationsByJob(jobId:string){
+    const result = await db 
+     .select({
+        id: applications.id,
+        status: applications.status,
+        createdAt: applications.createdAt,
+
+        userId:users.id,
+        email:users.email,
+     })
+     .from (applications)
+     .innerJoin(users,eq(applications.userId,users.id))
+     .where(eq(applications.jobId,jobId));
+     return result;
+}
 export async function createApplication(userId:string,jobId:string) {
     const result= await db
     .insert(applications)
