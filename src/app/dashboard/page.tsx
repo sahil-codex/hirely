@@ -9,6 +9,11 @@ type Job = {
   salary?: number | null;
   createdAt: string;
 };
+type Application = {
+    id:string;
+    email:string;
+    status:string;
+}
 
 export default function DashboardPage(){
     const [title,setTitle] = useState("");
@@ -20,7 +25,10 @@ export default function DashboardPage(){
     const [loading,setLoading] = useState(false);
     const [loadingJobs,setLoadingJobs] = useState(true);
     const [message,setMessage] = useState("");
-
+    const [applications,setApplications] = useState<Application[]>([]);
+    const [selectedJob,setSelectedJob] = useState<string | null>(null);
+    const [showConfirm,setShowConfirm] = useState(false);
+    const [jobToDelete,setJobToDelete] = useState<string | null>(null);
     useEffect(()=>{
         const fetchMyJobs = async() =>{
             try{
@@ -84,10 +92,15 @@ export default function DashboardPage(){
             setLoading(false);
         }
     };
-    const handleDelete = async (id:string)=>{
-    if (!confirm("Are you sure you want to delete this job?")) return;
+    const handleDeleteClick = async (id:string)=>{
+        setJobToDelete(id);
+        setShowConfirm(true);
+    };
+       
+        const confirmDelete = async() =>{
+            if(!jobToDelete) return;
     try{
-        const res = await fetch(`/api/jobs/${id}`,{
+        const res = await fetch(`/api/jobs/${jobToDelete}`,{
             method:"DELETE",
             credentials:"include",
         });
@@ -100,12 +113,37 @@ export default function DashboardPage(){
             throw new Error(data.error || "Failed to delete");
             
         }
-        setJobs((prev)=>prev.filter((job)=>job.id!==id));
+        setJobs((prev)=>prev.filter((job)=>job.id!==jobToDelete));
     }catch(err:any){
-        console.error(err.message);
         setMessage(err.message);
+    } finally{
+            setShowConfirm(false);
+            setJobToDelete(null);
     }
-    }
+    };
+
+    const fetchApplications = async (jobId:string) =>{
+        if(selectedJob===jobId){
+            setSelectedJob(null);
+            return;
+        }
+        try{
+            const res = await fetch(`/api/jobs/${jobId}/applications`,{
+                credentials:"include",
+            });
+            const data = await res.json();
+
+            if(!res.ok){
+                alert(data.error);
+                return;
+            }
+            setApplications(data.applications || []);
+            setSelectedJob(jobId);
+        }catch{
+            alert("Failed to load applications");
+        }
+    };
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-2xl font-semibold text-white">Recruiter Dashboard</h1>
@@ -139,13 +177,41 @@ export default function DashboardPage(){
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
                             <p className="text-primary text-sm mt-1"> ₹  {job.salary!==null&& job.salary !==undefined ? Number(job.salary).toLocaleString(): "Not specified"}</p>
                             <p className="text-xs text-gray-500 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
-                                 <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-xs hover:text-red-300 opacity-80">DELETE</button>
-                        </div>
-                        
+                                 <button onClick={()=>handleDeleteClick(job.id)} className="text-red-400 text-xs hover:text-red-300 opacity-80">DELETE</button>
+                                 <button onClick={() => fetchApplications(job.id)} className="text-blue-400 text-sm hover:text-blue-300">View Applications</button>
+                                
+                        {selectedJob === job.id && (
+                            <div className="mt-4 border-t border-border pt-3 space-y-2">
+                            <h4 className="text-sm text-gray-300">Applications:</h4>
+                            {applications.length===0 ? (
+                                <p className="text-gray-500 text-sm">No applications yet</p>
+                            ) :(
+                                applications.map((app)=>(
+                                    <div key={app.id} className="text-sm text-gray-300 border border-border rounded-lg p-2">
+                                        <p>📧 {app.email}</p>
+                                        <p>Status: {app.status}</p>
+                                        </div>
+                                      ))
+                                    )}
+                              </div>
+                                )}
+                         </div>
                     ))}
-                </div>
-               )}
+                 </div>
+                )}
+             </div>
+                {showConfirm && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                  <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm text-center shadow-xl">
+                  <h2 className="text-lg font-semibold text-white">Are you sure?</h2>
+                  <p className="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+                  <div className="flex gap-3 mt-6">
+                    <button onClick={()=>setShowConfirm(false)} className=" flex-1 border border rounded-lg py-2 text-gray-300 hover:bg-muted">Cancel</button>
+                    <button onClick={confirmDelete} className="flex-1 bg-red-500 rounded-lg py-2 text-white hover:bg-red-600 ">Delete</button>
+                  </div>
+                  </div>
+                  </div>
+                )}
             </div>
-        </div>
-    )
+    );
 }
