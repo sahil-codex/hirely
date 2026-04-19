@@ -139,7 +139,7 @@ export default function DashboardPage(){
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
                             <p className="text-primary text-sm mt-1"> ₹  {job.salary!==null&& job.salary !==undefined ? Number(job.salary).toLocaleString(): "Not specified"}</p>
                             <p className="text-xs text-gray-500 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
-                                 <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-sm hover:text-red-300">DELETE</button>
+                                 <button onClick={()=>handleDelete(job.id)} className="text-red-400 text-xs hover:text-red-300 opacity-80">DELETE</button>
                         </div>
                         
                     ))}
