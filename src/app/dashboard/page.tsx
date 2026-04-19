@@ -168,8 +168,9 @@ export default function DashboardPage(){
                ):(
                 <div className="grid gap-4">
                     {jobs.map((job)=>(
-                        <div key={job.id} className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition">
+                        <div key={job.id} className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition space-y-3">
                         <h3 className="text-white font-medium">{job.title}</h3>
+                        <div className=" space-y-1 text-sm">
                          {job.description && (
                             <p className="text-gray-400 text-sm mt-1">{job.description}</p>
                          )}
@@ -177,9 +178,13 @@ export default function DashboardPage(){
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
                             <p className="text-primary text-sm mt-1"> ₹  {job.salary!==null&& job.salary !==undefined ? Number(job.salary).toLocaleString(): "Not specified"}</p>
                             <p className="text-xs text-gray-500 mt-2">{new Date(job.createdAt).toLocaleDateString()}</p>
-                                 <button onClick={()=>handleDeleteClick(job.id)} className="text-red-400 text-xs hover:text-red-300 opacity-80">DELETE</button>
-                                 <button onClick={() => fetchApplications(job.id)} className="text-blue-400 text-sm hover:text-blue-300">View Applications</button>
-                                
+                            </div>
+                            <div className="flex items-center gap-4 mt-4">
+                                 <button onClick={()=>handleDeleteClick(job.id)} className="text-xs font-medium text-red-400 hover:text-red-300 transition">DELETE</button>
+                                 <button onClick={() => fetchApplications(job.id)} className="text-sm font-medium text-blue-400 hover:text-blue-300 transition">View Applications</button>
+                            </div>
+                             {job.description && (<p className="text-gray-400 text-sm mt-2 line-clamp-2">{job.description}</p>)}
+                        
                         {selectedJob === job.id && (
                             <div className="mt-4 border-t border-border pt-3 space-y-2">
                             <h4 className="text-sm text-gray-300">Applications:</h4>
