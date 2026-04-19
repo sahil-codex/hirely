@@ -206,7 +206,7 @@ export default function DashboardPage(){
                   <h2 className="text-lg font-semibold text-white">Are you sure?</h2>
                   <p className="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
                   <div className="flex gap-3 mt-6">
-                    <button onClick={()=>setShowConfirm(false)} className=" flex-1 border border rounded-lg py-2 text-gray-300 hover:bg-muted">Cancel</button>
+                    <button onClick={()=>setShowConfirm(false)} className=" flex-1 border border-border rounded-lg py-2 text-gray-300 hover:bg-muted">Cancel</button>
                     <button onClick={confirmDelete} className="flex-1 bg-red-500 rounded-lg py-2 text-white hover:bg-red-600 ">Delete</button>
                   </div>
                   </div>
