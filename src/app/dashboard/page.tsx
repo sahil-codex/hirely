@@ -140,6 +140,7 @@ export default function DashboardPage(){
             setApplications(data.applications || []);
             setSelectedJob(jobId);
         }catch{
+        
             alert("Failed to load applications");
         }
     };

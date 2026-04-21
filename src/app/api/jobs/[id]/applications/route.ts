@@ -14,7 +14,7 @@ export async function GET(
         const applications = await getApplicationsForJobService(user,id);
         return NextResponse.json({applications});
     }catch(err:any){
-        NextResponse.json(
+        return NextResponse.json(
             {error:err.message|| "Something went wrong"},
             {status:400}
         );
