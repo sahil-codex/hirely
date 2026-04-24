@@ -38,7 +38,25 @@ export default function JobsPage(){
     if(loading){
         return <p className="text-white">Loading jobs...</p>;
     }
-
+   const handleApply = async(jobId:string) => {
+    try{
+        const res = await fetch("/api/jobs/apply",{
+            method:"POST",
+            credentials:"include",
+            headers:{
+                "Content-Type":"application/json",
+            },body:JSON.stringify({jobId}),
+        });
+        const data = await res.json();
+        if(!res.ok){
+            alert(data.error||"Failed to apply");
+            return;
+        }
+        alert("Applied successfully 🎉");
+    }catch(err){
+        alert("Something went wrong");
+    }
+   };
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-semibold text-white">Available Jobs</h1>
@@ -56,7 +74,7 @@ export default function JobsPage(){
                             <span className="text-primary font-semibold">
                                   ₹{job.salary||"Not disclosed"}
                                 </span>
-                        <button className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
+                        <button onClick= {()=>handleApply(job.id)} className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
                         </div>
                         </div>    
                 ))}
