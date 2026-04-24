@@ -8,6 +8,13 @@
       "when": 1775363163646,
       "tag": "0000_slimy_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776755480839,
+      "tag": "0001_fuzzy_the_order",
+      "breakpoints": true
     }
   ]
 }

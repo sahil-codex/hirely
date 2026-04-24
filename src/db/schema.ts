@@ -33,7 +33,7 @@ export const applications = pgTable("applications",{
   userId:uuid("user_id").notNull(),
   jobId:uuid("job_id").notNull(),
   status:text("status").default("APPLIED").$type<"APPLIED"|"SHORTLISTED"|"REJECTED">(),
-  createdAt:timestamp("created_At").defaultNow(),
+  createdAt:timestamp("created_at").defaultNow(),
   },
   (table)=>({uniqueUserJob:uniqueIndex("unique_user_job").on(
     table.userId,
