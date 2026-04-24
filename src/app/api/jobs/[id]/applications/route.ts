@@ -3,10 +3,10 @@ import { getUserFromRequest } from "@/lib/getUser";
 import { getApplicationsForJobService } from "@/services/application.service";
 
 export async function GET(
-    req:NextRequest,context:{params:Promise<{id:string}>}
+    req:NextRequest,context:{params:{id:string}}
 ){
     try{
-        const {id} = await context.params;
+        const {id} = context.params;
         const user = await getUserFromRequest();
         if(!user){
             return NextResponse.json({error:"Unauthorized"},{status:401});
