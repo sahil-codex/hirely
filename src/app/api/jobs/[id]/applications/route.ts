@@ -1,6 +1,6 @@
 import { NextResponse,NextRequest } from "next/server";
 import { getUserFromRequest } from "@/lib/getUser";
-import { getApplicationsForJobService } from "@/services/application.service";
+import { getApplicationsForJobService, updateApplicationsStatusService } from "@/services/application.service";
 
 export async function GET(
     req:NextRequest,context:{params: Promise<{id:string}>}
@@ -16,6 +16,27 @@ export async function GET(
     }catch(err:any){
         return NextResponse.json(
             {error:err.message|| "Something went wrong"},
+            {status:400}
+        );
+    }
+}
+
+export async function PATCH(req:NextRequest,context:{params:Promise<{id:string}>}){
+    try {
+        const {id} = await context.params;
+        const user = await getUserFromRequest();
+
+        if(!user){
+            return NextResponse.json({error:"Unauthorized"},{status:401});
+        }
+        const {status} = await req.json();
+        const application = await updateApplicationsStatusService(
+            user,id,status
+        );
+        return NextResponse.json({application});
+    } catch(err:any){
+        return NextResponse.json(
+            {error:err.message || "Something went wrong"},
             {status:400}
         );
     }
