@@ -121,29 +121,6 @@ export default function DashboardPage(){
             setJobToDelete(null);
     }
     };
-
-    const fetchApplications = async (jobId:string) =>{
-        if(selectedJob===jobId){
-            setSelectedJob(null);
-            return;
-        }
-        try{
-            const res = await fetch(`/api/jobs/${jobId}/applications`,{
-                credentials:"include",
-            });
-            const data = await res.json();
-
-            if(!res.ok){
-                alert(data.error);
-                return;
-            }
-            setApplications(data.applications || []);
-            setSelectedJob(jobId);
-        }catch{
-        
-            alert("Failed to load applications");
-        }
-    };
      
     const updateStatus = async(
         applicationId:string,status:"SHORTLISTED"|"REJECTED"
@@ -166,6 +143,29 @@ export default function DashboardPage(){
             alert("Error updating status");
         }
     };
+
+    const handleViewApplication = async (jobId:string) => {
+        if(selectedJob === jobId){
+            setSelectedJob(null);
+            setApplications([]);
+            return;
+        }
+        try{
+            const res = await fetch(`/api/jobs/${jobId}/applications`,{
+                credentials:"include",
+            })
+            const data = await res.json();
+            if(!res.ok){
+                alert(data.error || "Failed to load applications");
+                return;
+            }
+            setApplications(data.applications || []);
+            setSelectedJob(jobId);
+        }catch{
+            alert("Failed to load applications");
+        }
+    };
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-2xl font-semibold text-white">Recruiter Dashboard</h1>
@@ -203,7 +203,7 @@ export default function DashboardPage(){
                             </div>
                             <div className="flex items-center gap-4 mt-4">
                                  <button onClick={()=>handleDeleteClick(job.id)} className="text-xs font-medium text-red-400 hover:text-red-300 transition">DELETE</button>
-                                 <button onClick={() => fetchApplications(job.id)} className="text-sm font-medium text-blue-400 hover:text-blue-300 transition">View Applications</button>
+                                 <button onClick={() => handleViewApplication(job.id)} className="text-sm font-medium text-blue-400 hover:text-blue-300 transition">{selectedJob===job.id?"Hide Applications" :"View Applications"}</button>
                             </div>
                         
                         {selectedJob === job.id && (
