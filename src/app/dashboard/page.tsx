@@ -144,7 +144,28 @@ export default function DashboardPage(){
             alert("Failed to load applications");
         }
     };
-
+     
+    const updateStatus = async(
+        applicationId:string,status:"SHORTLISTED"|"REJECTED"
+    ) => {
+        try{
+            const res = await fetch(`/api/applications/${applicationId}`,{
+                method:"PATCH",
+                credentials:"include",
+                headers:{ 
+                    "Content-Type":"application/json",
+                },
+                body:JSON.stringify({status}),
+            });
+            if(!res.ok){
+                alert("Failed to update");
+                return;
+            }
+            setApplications((prev)=>prev.map((app)=>app.id===applicationId?{...app,status}:app));
+        }catch{
+            alert("Error updating status");
+        }
+    };
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-2xl font-semibold text-white">Recruiter Dashboard</h1>
@@ -195,6 +216,10 @@ export default function DashboardPage(){
                                     <div key={app.id} className="text-sm text-gray-300 border border-border rounded-lg p-2">
                                         <p>📧 {app.email}</p>
                                         <p>Status: {app.status}</p>
+                                        <div className="flex gap-2 mt-2">
+                                            <button onClick={()=>updateStatus(app.id,"SHORTLISTED")} className="text-green-400 text-xs">Shortlist</button>
+                                            <button onClick={()=>updateStatus(app.id,"REJECTED")} className="text-red-400 text-xs">Reject</button>
+                                        </div>
                                         </div>
                                       ))
                                     )}
