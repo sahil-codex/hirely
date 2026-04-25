@@ -173,7 +173,7 @@ export default function DashboardPage(){
                         <h3 className="text-white font-medium">{job.title}</h3>
                         <div className=" space-y-1 text-sm">
                          {job.description && (
-                            <p className="text-gray-400 text-sm mt-1">{job.description}</p>
+                            <p className="text-gray-400 text-sm mt-2 line-clamp-2">{job.description}</p>
                          )}
 
                             <p className="text-gray-400 text-sm mt-2"> 📍{job.location || "Remote"}</p>
@@ -184,7 +184,6 @@ export default function DashboardPage(){
                                  <button onClick={()=>handleDeleteClick(job.id)} className="text-xs font-medium text-red-400 hover:text-red-300 transition">DELETE</button>
                                  <button onClick={() => fetchApplications(job.id)} className="text-sm font-medium text-blue-400 hover:text-blue-300 transition">View Applications</button>
                             </div>
-                             {job.description && (<p className="text-gray-400 text-sm mt-2 line-clamp-2">{job.description}</p>)}
                         
                         {selectedJob === job.id && (
                             <div className="mt-4 border-t border-border pt-3 space-y-2">
