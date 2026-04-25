@@ -149,7 +149,7 @@ export default function DashboardPage(){
         applicationId:string,status:"SHORTLISTED"|"REJECTED"
     ) => {
         try{
-            const res = await fetch(`/api/applications/${applicationId}`,{
+            const res = await fetch(`/api/jobs/${applicationId}/applications`,{
                 method:"PATCH",
                 credentials:"include",
                 headers:{ 
