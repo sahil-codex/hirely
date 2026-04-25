@@ -1,7 +1,7 @@
 import{
     createApplication,checkExistingApplication,
 } from "@/repositories/application.repository";
-import {getApplicationsByJob} from "@/repositories/application.repository";
+import {getApplicationsByJob,updateApplicationsStatus} from "@/repositories/application.repository";
 
 export async function applyToJobService(user:any,jobId:string){
     if(user.role!=="CANDIDATE"){
@@ -30,4 +30,11 @@ export async function getApplicationsForJobService(
         throw new Error("Job ID required");
     }
     return await getApplicationsByJob(jobId);
+}
+
+export async function updateApplicationsStatusService( user:{role:string},applicationId:string,status:"SHORTLISTED"|"REJECTED"){
+   if(user.role!=="RECRUITER"){
+    throw new Error("Forbidden");
+   }
+   return await updateApplicationsStatus(applicationId,status);
 }
