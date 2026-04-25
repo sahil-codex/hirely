@@ -41,3 +41,18 @@ export async function checkExistingApplication(userId:string,jobId:string){
     .limit(1);
     return result[0];
 }
+
+export async function updateApplicationsStatus(
+    applicationId:string,status:"SHORTLISTED"|"REJECTED"
+){
+    const result = await db
+    .update(applications)
+    .set({status})
+    .where(eq(applications.id,applicationId))
+    .returning();
+
+    if(!result.length){
+        throw new Error("Application not found");
+    }
+    return result[0];
+}
