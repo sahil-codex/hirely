@@ -42,7 +42,7 @@ export default function LoginPage(){
       if(role==="RECRUITER"){
         router.push("/dashboard");
       }else{
-        router.push("/jobs");
+        router.push("/dashboard/candidate");
       }
       router.refresh();
      } catch(err){
