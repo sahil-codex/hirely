@@ -41,7 +41,7 @@ export default function CandidateDashboardPage(){
          {loading ? (
             <p className="text-gray-400">Loading applications...</p>
          ):error?(
-            <p className="text-red-400 border border-red-500/20 bg-red-500/10 rouned-lg px-4 py-2">{error}</p>
+            <p className="text-red-400 border border-red-500/20 bg-red-500/10 rounded-lg px-4 py-2">{error}</p>
          ):applications.length===0?(
             <p className="text-gray-400">No applications yet.</p>
          ): applications.length===0?(
