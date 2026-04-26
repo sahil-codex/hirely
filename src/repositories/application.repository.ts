@@ -1,6 +1,6 @@
 import { db } from "@/lib/drizzle";
-import { applications,users} from "@/db/schema";
-import {eq,and} from "drizzle-orm";
+import { applications,users,jobs} from "@/db/schema";
+import {eq,and,desc} from "drizzle-orm";
 
 
 export async function getApplicationsByJob(jobId:string){
@@ -12,10 +12,15 @@ export async function getApplicationsByJob(jobId:string){
 
         userId:users.id,
         email:users.email,
+        jobId:jobs.id,
+        title:jobs.title,
+        salary:jobs.salary,
+
      })
      .from (applications)
      .innerJoin(users,eq(applications.userId,users.id))
-     .where(eq(applications.jobId,jobId));
+     .where(eq(applications.jobId,jobId))
+     .orderBy(desc(applications.createdAt));
      return result;
 }
 export async function createApplication(userId:string,jobId:string) {
