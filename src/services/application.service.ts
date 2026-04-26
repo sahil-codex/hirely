@@ -1,7 +1,7 @@
 import{
     createApplication,checkExistingApplication,
 } from "@/repositories/application.repository";
-import {getApplicationsByJob,updateApplicationsStatus} from "@/repositories/application.repository";
+import {getApplicationsByJob,updateApplicationsStatus,getApplicationsByUser} from "@/repositories/application.repository";
 
 export async function applyToJobService(user:any,jobId:string){
     if(user.role!=="CANDIDATE"){
@@ -39,4 +39,9 @@ export async function updateApplicationsStatusService( user:{role:string},applic
    return await updateApplicationsStatus(applicationId,status);
 }
 
-export async function getCandidate
+export async function getCandidateApplicationsService(user:{userId:string,role:string;}){
+    if(user.role!=="CANDIDATE"){
+        throw new Error("Only candidates allowed");
+    }
+    return await getApplicationsByUser(user.userId);
+}
