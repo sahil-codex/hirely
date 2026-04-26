@@ -38,3 +38,5 @@ export async function updateApplicationsStatusService( user:{role:string},applic
    }
    return await updateApplicationsStatus(applicationId,status);
 }
+
+export async function getCandidate

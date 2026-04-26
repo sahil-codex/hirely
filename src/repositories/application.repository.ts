@@ -12,9 +12,6 @@ export async function getApplicationsByJob(jobId:string){
 
         userId:users.id,
         email:users.email,
-        jobId:jobs.id,
-        title:jobs.title,
-        salary:jobs.salary,
 
      })
      .from (applications)
@@ -60,4 +57,24 @@ export async function updateApplicationsStatus(
         throw new Error("Application not found");
     }
     return result[0];
+}
+
+export async function getApplicationsByUser(userId:string){
+    const result = await db
+     .select({
+        id:applications.id,
+        status:applications.status,
+        createdAt:applications.createdAt,
+
+        jobId:jobs.id,
+        title:jobs.title,
+        location:jobs.location,
+        salary:jobs.salary,
+     })
+     .from(applications)
+     .innerJoin(jobs,eq(applications.jobId,jobs.id))
+     .where(eq(applications.userId,userId))
+     .orderBy(desc(applications.createdAt));
+
+     return result;
 }
