@@ -101,3 +101,13 @@ export async function deleteJobById(jobId:string,recruiterId:string){
        .returning();
        return result[0];
 }
+
+export async function getJobById(jobId:string){
+    const result = await db
+    .select()
+    .from(jobs)
+    .where(eq(jobs.id,jobId))
+    .limit(1);
+
+    return result[0] || null;
+}
