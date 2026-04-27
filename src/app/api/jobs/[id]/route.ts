@@ -1,5 +1,5 @@
 import { NextResponse,NextRequest } from "next/server";
-import { deleteJobService } from "@/services/job.service";
+import { deleteJobService, getJobDetailsService } from "@/services/job.service";
 import { getUserFromRequest } from "@/lib/getUser";
 
 export async function DELETE( req:NextRequest,context:{ params:Promise<{id:string }>}) {
@@ -18,3 +18,17 @@ export async function DELETE( req:NextRequest,context:{ params:Promise<{id:strin
             );
         }
      }
+
+export async function GET(req:NextRequest,context:{params:Promise<{id:string}>}) {
+    try{
+        const {id} = await context.params;
+        const job = await getJobDetailsService(id);
+        return NextResponse.json({job});
+    }catch (err:any){
+        return NextResponse.json(
+            {error:err.message || "Something went wrong"},
+            {status:404}
+        );
+    }
+    
+}   
