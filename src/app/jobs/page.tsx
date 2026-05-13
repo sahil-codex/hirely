@@ -70,14 +70,16 @@ export default function JobsPage(){
                     className="bg-card border border-border rounded-xl p-5">
                         <h2 className="text-lg text-white font-medium">{job.title}</h2>
                         <p className="text-gray-400 text-sm mt-1">{job.location||"Remote"}</p>
-                        <div className="mt-3 flex justify-between items-center">
+                        <div className="mt-4 flex justify-between items-center">
                             <span className="text-primary font-semibold">
-                                  ₹{job.salary||"Not disclosed"}
+                                  {job.salary ?`₹{job.salary}`:"Not disclosed"}
                                 </span>
+                                <div className="flex items-center gap-3">
                         <button onClick= {()=>handleApply(job.id)} className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
                         <Link href={`/jobs/${job.id}`} className = "text-blue-400 text-sm hover:text-blue-300">View Details</Link>
                         </div>
-                        </div>    
+                        </div> 
+                        </div>   
                 ))}
         </div>
         </div>
