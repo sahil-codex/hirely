@@ -4,13 +4,16 @@ import {useEffect,useState} from "react";
 
 export function Navbar(){
 const [role,setRole] = useState("");
+const [mounted,setMounted] = useState(false);
 useEffect(()=>{
     const storedRole = localStorage.getItem("role");
     if(storedRole){
         setRole(storedRole);
     }
+    setMounted(true);
 },[]);
 const dashboardLink = role ==="CANDIDATE"?"/dashboard/candidate":"/dashboard";
+    if(!mounted)return (<div className="w-full py-4"><h1 className="text-xl font-semibold text-primary">Hirely</h1></div>);
     return(
         <div className="w-full flex items-center justify-between py-4">
             <Link href="/"> <h1 className="text-xl font-semibold text-primary">Hirely</h1> </Link>
