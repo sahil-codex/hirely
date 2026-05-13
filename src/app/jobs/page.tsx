@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect,useState } from "react";
-
+import Link from "next/link";
 type Job = {
   id: string;
   title: string;
@@ -75,6 +75,7 @@ export default function JobsPage(){
                                   ₹{job.salary||"Not disclosed"}
                                 </span>
                         <button onClick= {()=>handleApply(job.id)} className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
+                        <Link href={`/jobs/${job.id}`} className = "text-blue-400 text-sm hover:text-blue-300">View Details</Link>
                         </div>
                         </div>    
                 ))}
