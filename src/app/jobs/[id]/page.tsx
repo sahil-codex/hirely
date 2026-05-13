@@ -74,7 +74,7 @@ export default function JobDetailsPage(){
          <div className="flex flex-col gap-3">       
         <h1 className="text-4xl font-bold text-white">{job.title}</h1>
         <p className="text-gray-400 text-lg">{job.location || "Remote"}</p>
-        <p className="text-2xl font-semibold text-primary">{job.salary ?`₹${job.salary}` : "Not disclosed"}</p>
+        <p className="text-2xl font-semibold text-primary">{job.salary ?`₹${job.salary.toLocaleString("en-IN")}` : "Not disclosed"}</p>
         </div>
         <div className="mt-8 border-t border-border pt-6">
             <h2 className="text-2xl font-semibold text-white mb-4">Job Description</h2>
