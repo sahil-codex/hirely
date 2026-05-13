@@ -12,7 +12,7 @@ export default function JobsPage(){
     const [jobs,setJobs] = useState<Job[]>([]);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState("");
-
+    const [role,setRole] = useState("");
     useEffect(()=>{
      const fetchJobs = async ()=> {
         try {
@@ -27,6 +27,10 @@ export default function JobsPage(){
         }const result = await res.json();
          const jobsData = Array.isArray(result.jobs) ? result.jobs : result.jobs?.jobs || [];
        setJobs(jobsData as Job[]);
+       const storedRole = localStorage.getItem("role");
+        if(storedRole){
+        setRole(storedRole);
+     }
     }catch(err){
         setError("Could not load jobs");
     }finally{
@@ -75,7 +79,11 @@ export default function JobsPage(){
                                   {job.salary ?`₹${job.salary}`:"Not disclosed"}
                                 </span>
                                 <div className="flex items-center gap-3">
+                         {role === "CANDIDATE"?(
                         <button onClick= {()=>handleApply(job.id)} className="bg-primary px-4 py-1 rounded-lg text-sm" >Apply</button>
+                         ):(
+                            <button disabled className="px-4 py-1 rounded-lg text-sm border border-border text-gray-500 cursor-not-allowed">Recruiters cannot apply</button>
+                         )}
                         <Link href={`/jobs/${job.id}`} className = "text-blue-400 text-sm hover:text-blue-300">View Details</Link>
                         </div>
                         </div> 
