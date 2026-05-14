@@ -56,7 +56,7 @@ export default function JobsPage(){
             if(skills.trim()){
                 params.append("skills",skills);
             }
-            await new Promise((resolve)=>setTimeout(resolve,2000));
+            await new Promise((resolve)=>setTimeout(resolve,1200));
 
             const res = await fetch(`/api/jobs/search?${params.toString()}`,{
                 method:"GET",
