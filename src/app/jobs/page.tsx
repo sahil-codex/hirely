@@ -111,8 +111,8 @@ export default function JobsPage(){
               {error && ( <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg py-2 px-3 text-sm">{error}</p>)}
                {loading && (
                 <div className="flex items-center gap-3 text-gray-400 ">
-                    <div className="w-5 h-5 border-2 border-gray-500 border-t-white rounded-full animate-spin"></div>
-                <p className="animate-pulse">Searching jobs...</p>
+                    <div className="w-16 h-16 border-4 border-gray-700 border-t-white rounded-full animate-spin [animation-duration:1.5s]"></div>
+                <p className="text-2xl text-gray-300 animate-pulse font-medium">Searching jobs...</p>
                 </div>
                )}
                 {jobs.length === 0 && !error && !loading &&(
