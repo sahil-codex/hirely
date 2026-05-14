@@ -2,6 +2,7 @@
 
 import { useEffect,useState } from "react";
 import Link from "next/link";
+import { resolve } from "path";
 type Job = {
   id: string;
   title: string;
@@ -55,6 +56,8 @@ export default function JobsPage(){
             if(skills.trim()){
                 params.append("skills",skills);
             }
+            await new Promise((resolve)=>setTimeout(resolve,2000));
+
             const res = await fetch(`/api/jobs/search?${params.toString()}`,{
                 method:"GET",
                 credentials:"include",
@@ -107,8 +110,9 @@ export default function JobsPage(){
             </div>
               {error && ( <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg py-2 px-3 text-sm">{error}</p>)}
                {loading && (
-                <div className="text-gray-400 animate-pulse">
-                <p className="text-white">Loading jobs...</p>
+                <div className="flex items-center gap-3 text-gray-400 ">
+                    <div className="w-5 h-5 border-2 border-gray-500 border-t-white rounded-full animate-spin"></div>
+                <p className="animate-pulse">Searching jobs...</p>
                 </div>
                )}
                 {jobs.length === 0 && !error && !loading &&(
