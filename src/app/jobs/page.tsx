@@ -13,11 +13,49 @@ export default function JobsPage(){
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState("");
     const [role,setRole] = useState("");
+    const [keyword,setKeyword] = useState("");
+    const [location,setLocation] = useState("");
+    const [minSalary,setMinSalary] = useState("");
+    const [skills,setSkills] = useState("");
+    const [debouncedKeyword,setDebouncedKeyword] = useState("");
+    useEffect(()=>{
+        const timer = setTimeout(()=>{
+            setDebouncedKeyword(keyword);
+        },400);
+        return ()=>clearTimeout(timer);
+    },[keyword]);
+    useEffect(()=>{
+         const storedRole = localStorage.getItem("role");
+        if(storedRole){
+        setRole(storedRole);
+     }
+    },[]);
     useEffect(()=>{
      const fetchJobs = async ()=> {
         try {
+            setLoading(true);
             setError("");
-            const res = await fetch("/api/jobs/search",{
+             if(!debouncedKeyword.trim() && !location.trim()&& !minSalary.trim()&& !skills.trim()
+             ){
+         setJobs([]);
+         setLoading(false);
+        return;
+         }
+            const params = new URLSearchParams();
+
+            if(debouncedKeyword.trim()){
+                params.append("keyword",debouncedKeyword);
+            }
+            if(location.trim()){
+                params.append("location",location);
+            }
+            if(minSalary.trim()){
+                params.append("minSalary",minSalary);
+            }
+            if(skills.trim()){
+                params.append("skills",skills);
+            }
+            const res = await fetch(`/api/jobs/search?${params.toString()}`,{
                 method:"GET",
                 credentials:"include",
             });
@@ -27,18 +65,15 @@ export default function JobsPage(){
         }const result = await res.json();
          const jobsData = Array.isArray(result.jobs) ? result.jobs : result.jobs?.jobs || [];
        setJobs(jobsData as Job[]);
-       const storedRole = localStorage.getItem("role");
-        if(storedRole){
-        setRole(storedRole);
-     }
     }catch(err){
+        console.error(err);
         setError("Could not load jobs");
     }finally{
         setLoading(false);
       }
     };
      fetchJobs();
-  },[]);
+  },[debouncedKeyword,location,minSalary,skills]);
     if(loading){
         return <p className="text-white">Loading jobs...</p>;
     }
@@ -64,9 +99,25 @@ export default function JobsPage(){
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-semibold text-white">Available Jobs</h1>
+            <div className="grid md:grid-cols-4 gap-4 mb-6">
+                <input type = "text" placeholder="Search jobs..." value={keyword} onChange={(e)=>setKeyword(e.target.value)} className="input"/>
+                <input type = "text" placeholder="Location" value={location} onChange={(e)=>setLocation(e.target.value)} className="input"/>
+                <input type = "number" placeholder= "Min Salary" value={minSalary} onChange={(e)=>setMinSalary(e.target.value)} className="input"/>
+                <input type = "text" placeholder="Skills (React,Node)" value={skills} onChange={(e)=>setSkills(e.target.value)} className="input"/>
+            </div>
               {error && ( <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg py-2 px-3 text-sm">{error}</p>)}
-                {jobs.length === 0 && !error &&(
+               {loading && (
+                <div className="text-gray-400 animate-pulse">
+                <p className="text-white">Loading jobs...</p>
+                </div>
+               )}
+                {jobs.length === 0 && !error && !loading &&(
                     <p className="text-gray-400">No jobs found</p>
+                )}
+                {keyword && (
+                    <p className="text-sm text-gray-400"> Showing results for:{" "}
+                    <span className="text-white">{keyword}</span>
+                    </p>
                 )}
                 <div className="grid gap-4">
                 {jobs.map((job)=>(
