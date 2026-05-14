@@ -39,7 +39,7 @@ export default function LoginPage(){
           localStorage.setItem("role", data.user.role);
           const role = data.user.role;
   
-      if(role==="RECRUITER"){
+      if(role.trim().toUpperCase()==="RECRUITER"){
         router.push("/dashboard");
       }else{
         router.push("/dashboard/candidate");

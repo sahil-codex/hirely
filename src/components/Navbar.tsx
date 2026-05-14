@@ -2,17 +2,37 @@
 import Link from 'next/link';
 import {useEffect,useState} from "react";
 
+function isCandidateRole(role: string) {
+  return role.trim().toUpperCase() === "CANDIDATE";
+}
+
 export function Navbar(){
 const [role,setRole] = useState("");
 const [mounted,setMounted] = useState(false);
 useEffect(()=>{
-    const storedRole = localStorage.getItem("role");
-    if(storedRole){
-        setRole(storedRole);
-    }
-    setMounted(true);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        const data = await res.json();
+        if (!cancelled && data.user?.role) {
+          setRole(String(data.user.role));
+          return;
+        }
+      } catch {
+        /* fall through to localStorage */
+      }
+      if (!cancelled) {
+        setRole(localStorage.getItem("role") || "");
+      }
+    })().finally(() => {
+      if (!cancelled) setMounted(true);
+    });
+    return () => {
+      cancelled = true;
+    };
 },[]);
-const dashboardLink = role ==="CANDIDATE"?"/dashboard/candidate":"/dashboard";
+const dashboardLink = isCandidateRole(role) ? "/dashboard/candidate" : "/dashboard";
     if(!mounted)return (<div className="w-full py-4"><h1 className="text-xl font-semibold text-primary">Hirely</h1></div>);
     return(
         <div className="w-full flex items-center justify-between py-4">

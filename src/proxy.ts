@@ -47,6 +47,14 @@ export async function proxy(req:NextRequest){
    if(isPublicApi){
     return NextResponse.next();
    }
+   if (pathname.startsWith("/dashboard")) {
+    if (user.role === "CANDIDATE" && !pathname.startsWith("/dashboard/candidate")) {
+      return NextResponse.redirect(new URL("/dashboard/candidate", req.url));
+    }
+    if (user.role === "RECRUITER" && pathname.startsWith("/dashboard/candidate")) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+   }
      if(pathname.startsWith('/api/jobs/create')){
         if(user.role!=='RECRUITER'){
             return NextResponse.json({error:'Forbidden'},{status:403});
@@ -60,6 +68,6 @@ export async function proxy(req:NextRequest){
  return NextResponse.next();
 }
     export const config ={
-        matcher:["/dashboard/:path*","/api/:path*"],
+        matcher:["/dashboard","/dashboard/:path*","/api/:path*"],
     };
 
