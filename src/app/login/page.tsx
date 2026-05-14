@@ -22,12 +22,13 @@ export default function LoginPage(){
        setLoading(true);
        try{
         console.log("Sending request...");
-        const res = await fetch("/api/auth/login",{
-            method:"POST",
-            headers:{
-              "Content-Type":"application/json",
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-            body:JSON.stringify({email,password}),
+            credentials: "include",
+            body: JSON.stringify({ email, password }),
         });
         
       const data = await res.json();
@@ -35,7 +36,6 @@ export default function LoginPage(){
         setError(data.error||"Login failed");
         return;
       }
-          localStorage.setItem("token",data.token);
           localStorage.setItem("role", data.user.role);
           const role = data.user.role;
   
