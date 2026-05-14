@@ -18,6 +18,7 @@ export default function JobDetailsPage(){
     const [job,setJob] = useState<Job | null>(null);
     const [loading,setLoading] = useState(true);
     const[error,setError] = useState("");
+    const [role,setRole] = useState("");
     useEffect(()=>{
         const fetchJob = async () =>{
             try{
@@ -33,6 +34,22 @@ export default function JobDetailsPage(){
                 setLoading(false);
             }
         };
+
+         const fetchMe = async () => {
+    try {
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setRole(data.user.role);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
         if(jobId){
             fetchJob();
         }
@@ -91,9 +108,16 @@ export default function JobDetailsPage(){
                 </div>
         )}
         <div className="mt-10 flex justify-end">
-        <button onClick={handleApply} className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition duration-200">
-            Apply Now
-        </button>
+             {role === "candidate" ? (
+     <button
+      onClick={handleApply}
+      className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition duration-200"
+    >
+      Apply Now
+    </button>
+  ) : ( 
+      <button disabled className="px-6 py-3 rounded-xl font-medium border border-border text-gray-500 cursor-not-allowed"> Recruiters cannot apply</button>
+           )}
         </div>
         </div>
         </div>
