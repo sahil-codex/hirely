@@ -52,7 +52,7 @@ export default function CandidateDashboardPage(){
                         <div key={app.id}className="border border-border rounded-2xl bg-card p-6">
                             <h2 className="text-xl text-white font-semibold">{app.title}</h2>
                             <p className="text-gray-400 mt-1">{app.location||"Remote"}</p>
-                            <p className="text-primary font-semibold mt-2">{app.salary ?`₹${app.salary}`: "Salary not disclosed"}</p>
+                            <p className="text-primary font-semibold mt-2">{app.salary ?`₹${app.salary.toLocaleString("en-IN")}`: "Salary not disclosed"}</p>
                             <div className="mt-4 flex items-center justify-between">
                                 <span className="text-sm text-gray-400"> Applied: {new Date(app.createdAt).toLocaleDateString()}</span>
                                 <span className="text-sm px-3 py-1 rounded-full border border-border text-white">{app.status} </span>
