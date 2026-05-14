@@ -76,7 +76,7 @@ export default function JobsPage(){
                         <p className="text-gray-400 text-sm mt-1">{job.location||"Remote"}</p>
                         <div className="mt-4 flex justify-between items-center">
                             <span className="text-primary font-semibold">
-                                  {job.salary ?`₹${job.salary}`:"Not disclosed"}
+                                  {job.salary ?`₹${job.salary.toLocaleString("en-IN")}`:"Not disclosed"}
                                 </span>
                                 <div className="flex items-center gap-3">
                          {role === "CANDIDATE"?(
