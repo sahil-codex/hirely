@@ -6,7 +6,7 @@ export const jobSearchSchema = z.object({
 
     minSalary:z
      .string()
-     .transform((val)=> Number(val))
+     .transform((val)=> Number(val.replace(/,/g, "")))
      .refine((val)=> !isNaN(val),{
         message:"Invalid salary",
      })

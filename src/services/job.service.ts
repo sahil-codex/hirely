@@ -27,10 +27,18 @@ export async function searchJobsService(query:any) {
     const {jobs,totalCount} =  await searchJobs({
         keyword:query.keyword,
         location:query.location,
-        minSalary:query.minSalary
-           ? Number (query.minSalary)
-           : undefined,
-        skills:query.skills ? query.skills.split(",") : undefined,
+        minSalary:
+            query.minSalary !== undefined && query.minSalary !== ""
+                ? Number(query.minSalary)
+                : undefined,
+        skills: Array.isArray(query.skills)
+            ? query.skills
+            : query.skills
+              ? String(query.skills)
+                    .split(",")
+                    .map((s: string) => s.trim())
+                    .filter(Boolean)
+              : undefined,
         limit,
         offset,
     });

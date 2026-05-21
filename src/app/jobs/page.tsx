@@ -28,6 +28,16 @@ function isCandidateRole(role: string) {
   return role.trim().toUpperCase() === "CANDIDATE";
 }
 
+function minSalaryDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function formatMinSalaryInput(value: string) {
+  const digits = minSalaryDigits(value);
+  if (!digits) return "";
+  return Number(digits).toLocaleString("en-IN");
+}
+
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
@@ -83,7 +93,8 @@ export default function JobsPage() {
       const params = new URLSearchParams();
       if (search.keyword.trim()) params.append("keyword", search.keyword.trim());
       if (search.location.trim()) params.append("location", search.location.trim());
-      if (search.minSalary.trim()) params.append("minSalary", search.minSalary.trim());
+      const salaryDigits = minSalaryDigits(search.minSalary);
+      if (salaryDigits) params.append("minSalary", salaryDigits);
       if (search.skills.trim()) params.append("skills", search.skills.trim());
 
       const res = await fetch(`/api/jobs/search?${params.toString()}`, {
@@ -158,7 +169,7 @@ export default function JobsPage() {
         activeFilters.location.trim() &&
           `in ${activeFilters.location.trim()}`,
         activeFilters.minSalary.trim() &&
-          `₹${Number(activeFilters.minSalary).toLocaleString("en-IN")}+`,
+          `₹${Number(minSalaryDigits(activeFilters.minSalary)).toLocaleString("en-IN")}+`,
         activeFilters.skills.trim() &&
           `skills: ${activeFilters.skills.trim()}`,
       ]
@@ -212,11 +223,13 @@ export default function JobsPage() {
               Min salary (₹)
             </span>
             <input
-              type="number"
-              min={0}
-              placeholder="e.g. 500000"
+              type="text"
+              inputMode="numeric"
+              placeholder="e.g. 5,00,000"
               value={filters.minSalary}
-              onChange={(e) => updateFilter("minSalary", e.target.value)}
+              onChange={(e) =>
+                updateFilter("minSalary", formatMinSalaryInput(e.target.value))
+              }
               className="input"
             />
           </label>
