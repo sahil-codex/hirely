@@ -14,7 +14,9 @@ export const jobSearchSchema = z.object({
 
      skills: z
      .string()
-     .transform((val)=>val.split(","))
+     .transform((val) =>
+       val.split(",").map((s) => s.trim()).filter(Boolean)
+     )
      .optional(),
 
      page: z
