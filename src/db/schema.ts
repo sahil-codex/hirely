@@ -1,4 +1,3 @@
-import { time } from "console";
 import { pgTable,uuid,text,integer,timestamp,uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -55,7 +54,8 @@ export const candidateProfiles = pgTable(
    headline:text("headline"),
    bio:text("bio"),
    location:text("location"),
-   skills:text("skills").array(),
+   skills:text("skills").array().default([]),
+   experience:integer("experience"),
    company:text("company"),
    education:text("education"),
    resumeUrl:text("resume_url"),

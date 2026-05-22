@@ -13,7 +13,6 @@ export default function LoginPage(){
    
     const handleLogin = async(e:any)=>{
       e.preventDefault();
-      console.log("LoGIN CLICKED");
       setError("");
       if(!email||!password){
         setError("Please fill all fields");
@@ -21,7 +20,6 @@ export default function LoginPage(){
       }
        setLoading(true);
        try{
-        console.log("Sending request...");
         const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: {
