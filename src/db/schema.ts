@@ -1,3 +1,4 @@
+import { time } from "console";
 import { pgTable,uuid,text,integer,timestamp,uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -39,4 +40,26 @@ export const applications = pgTable("applications",{
     table.userId,
     table.jobId
   ),})
+);
+
+export const candidateProfiles = pgTable(
+  "candidate_profiles",
+{
+  id:uuid("id").defaultRandom().primaryKey(),
+  userId:uuid("user_id").references(()=>users.id,{
+    onDelete:"cascade",
+  })
+   .notNull()
+   .unique(),
+   fullName:text("full_name"),
+   headline:text("headline"),
+   bio:text("bio"),
+   location:text("location"),
+   skills:text("skills").array(),
+   company:text("company"),
+   education:text("education"),
+   resumeUrl:text("resume_url"),
+   createdAt:timestamp("created_at").defaultNow().notNull(),
+   updatedAt:timestamp("updated_at").defaultNow().notNull(),
+},
 );
