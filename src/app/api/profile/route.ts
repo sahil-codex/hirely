@@ -1,0 +1,56 @@
+import { NextRequest,NextResponse } from "next/server";
+import { getUserFromRequest } from "@/lib/getUser";
+
+import {
+    getProfileService,
+    saveProfileService,
+} from "@/services/profile.service";
+import { profileSchema } from "@/validators/profile.validator";
+
+export async function GET(req:NextRequest){
+    try{
+        const user = await getUserFromRequest(req);
+        if(!user){
+            return NextResponse.json(
+                {error:"Unauthorized"},
+                {status:401}
+            );
+        }
+        const profile = await getProfileService(user);
+        return NextResponse.json({ profile });
+    } catch (err:unknown){
+        return NextResponse.json(
+        {error: err instanceof Error ? err.message : "Something went wrong"},
+        {status:500}    
+    );
+    }
+}
+
+export async function PATCH(req:NextRequest){
+    try{
+        const user = await getUserFromRequest(req);
+        if(!user){
+            return NextResponse.json(
+                {error:"Unauthorized"},
+                {status:401}
+            );
+        }
+        const body = await req.json();
+        const parsed = profileSchema.safeParse(body);
+        if(!parsed.success){
+            return NextResponse.json(
+                {error:parsed.error.issues},
+                {status:400}
+            );
+        }
+            const profile = await saveProfileService(
+                user,parsed.data
+            );
+            return NextResponse.json({ profile });
+        } catch(err:unknown){
+            return NextResponse.json(
+                {error: err instanceof Error ? err.message : "Something went wrong"},
+                {status:500}
+        );
+        }
+    }
