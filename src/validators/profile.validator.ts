@@ -1,4 +1,8 @@
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+import { candidateProfiles } from "@/db/schema";
+const baseSchema = createInsertSchema(candidateProfiles);
 
 const skillsSchema = z 
    .array(
@@ -10,7 +14,7 @@ const skillsSchema = z
     .max(20,"Too many skills")
     .optional();
 
-    export const profileSchema = z.object({
+    export const profileSchema = baseSchema.extend({
         fullName:z
         .string()
         .trim()
@@ -40,6 +44,7 @@ const skillsSchema = z
         skills:skillsSchema,
 
         experience:z 
+        .coerce
         .number({
             error:"Experience must be a number",
         })
@@ -54,14 +59,43 @@ const skillsSchema = z
         .max(120,"Company name too long")
         .optional(),
 
-        education:z.string()
+        education:z
+        .string()
         .trim()
         .max(200,"Education too large")
         .optional(),
+
+        githubUrl:z
+        .string()
+        .trim()
+        .url("Invalid GitHub URL")
+        .refine(
+            (url) => new URL(url).hostname.includes("github.com"),
+            {
+                message:"Must be a GitHub URL",
+            }
+        )
+        .optional()
+        .or(z.literal("")),
+
+        linkedinUrl:z
+        .string()
+        .trim()
+        .url("Invalid LinkedIn URL")
+        .refine(
+           (url) =>
+           new URL(url).hostname.includes("linkedin.com"),
+           {
+           message: "Must be a LinkedIn URL",
+           }
+        )
+        .optional()
+        .or(z.literal("")),
 
         resumeUrl:z
          .string()
          .trim()
          .url("Invalid resume URL")
-         .optional(),
+         .optional()
+         .or(z.literal("")),
     });
