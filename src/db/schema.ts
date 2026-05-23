@@ -1,3 +1,4 @@
+import { profileSchema } from "@/validators/profile.validator";
 import { pgTable,uuid,text,integer,timestamp,uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -63,3 +64,4 @@ export const candidateProfiles = pgTable(
    updatedAt:timestamp("updated_at").defaultNow().notNull(),
 },
 );
+
