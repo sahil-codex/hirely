@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse,NextRequest } from "next/server";
 import { getUserFromRequest } from "@/lib/getUser";
 import { getCandidateApplicationsService } from "@/services/application.service";
 
-export async function GET(req:Request){
+export async function GET(req:NextRequest){
     try{
-        const user = await getUserFromRequest()
+        const user = await getUserFromRequest(req);
         if(!user){
             return NextResponse.json(
                 {error:"Unauthorized"},
