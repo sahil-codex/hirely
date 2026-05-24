@@ -99,3 +99,9 @@ const skillsSchema = z
          .optional()
          .or(z.literal("")),
     });
+
+
+    export type ProfileInput =
+     Omit<
+    z.infer<typeof profileSchema>,
+     "userId">;
