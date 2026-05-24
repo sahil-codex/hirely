@@ -4,7 +4,7 @@ import { getUserFromRequest } from "@/lib/getUser";
 
 export async function GET(req:NextRequest){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
       if(!user || user.role !=="RECRUITER"){
         return NextResponse.json({error:"Forbidden"},{status:403});
       }

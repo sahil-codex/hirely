@@ -4,7 +4,7 @@ import { getCandidateApplicationsService } from "@/services/application.service"
 
 export async function GET(req:NextRequest){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
         if(!user){
             return NextResponse.json(
                 {error:"Unauthorized"},

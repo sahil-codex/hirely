@@ -9,7 +9,7 @@ import { profileSchema } from "@/validators/profile.validator";
 
 export async function GET(req:NextRequest){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
         if(!user){
             return NextResponse.json(
                 {error:"Unauthorized"},
@@ -28,7 +28,7 @@ export async function GET(req:NextRequest){
 
 export async function PATCH(req:NextRequest){
     try{
-        const user = await getUserFromRequest(req);
+        const user = await getUserFromRequest();
         if(!user){
             return NextResponse.json(
                 {error:"Unauthorized"},

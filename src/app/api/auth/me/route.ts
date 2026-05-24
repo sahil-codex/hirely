@@ -1,8 +1,8 @@
-import { NextResponse,NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/getUser";
 
-export async function GET(req:NextRequest) {
-  const user = await getUserFromRequest(req);
+export async function GET() {
+  const user = await getUserFromRequest();
   if (!user) {
     return NextResponse.json({ user: null });
   }
