@@ -39,7 +39,7 @@ export async function PATCH(req:NextRequest){
         const parsed = profileSchema.safeParse(body);
         if(!parsed.success){
             return NextResponse.json(
-                {error:parsed.error.issues},
+                {error:parsed.error.flatten()},
                 {status:400}
             );
         }
