@@ -3,9 +3,15 @@ import{
     createProfile,
     updateProfile,
 } from "@/repositories/profile.repository";
-import { P } from "node_modules/tailwindcss/dist/resolve-config-QUZ9b-Gn.mjs";
 
-export async function getProfileService(user:{userId:string,role:string;}){
+import { ProfileInput } from "@/validators/profile.validator";
+
+
+type AuthUser = {
+    userId:string;
+    role:string;
+};
+export async function getProfileService(user:AuthUser){
     if(user.role!=="CANDIDATE"){
         throw new Error("Only candidates can access profiles");
     }
@@ -14,30 +20,17 @@ export async function getProfileService(user:{userId:string,role:string;}){
 }
 
 export async function saveProfileService(
-    user:{userId:string,role:string;
-
-    },
-    data:{
-      fullName?:string;
-      headline?:string;
-      bio?:string;
-      location?:string;
-      skills?:string[];
-      experience?:number;
-      company?:string;
-      education?:string;
-      resumeUrl?:string;
-    }
-) {
+    user:AuthUser,data:ProfileInput
+){
     if(user.role!=="CANDIDATE"){
-        throw new Error("Only candidate can update profiles");
+        throw new Error("Only candidates can update profiles");
     }
-    const existingPrifle = await getProfileByUserId(user.userId);
-    if(existingPrifle){
+    const existingProfile = await getProfileByUserId(user.userId);
+
+    if(existingProfile){
         return await updateProfile(user.userId,data);
     }
     return await createProfile({
-        userId:user.userId,
-        ...data,
+        userId: user.userId,...data,
     });
 }
