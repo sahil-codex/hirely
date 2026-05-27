@@ -7,19 +7,23 @@ import Link from "next/link";
 export default function UserMenu(){
     const [open,setOpen] = useState(false);
     const [role,setRole] = useState("");
-
-    useEffect(()=> {
-        const storedRole = localStorage.getItem("role");
-
-        if(storedRole){
-            setRole(storedRole);
-        }
-    },[]);
     
+    useEffect(()=>{
+        const updateRole = () => {
+            const storedRole = localStorage.getItem("role") || "";
+            setRole(storedRole);
+        };
+     updateRole();
+     window.addEventListener("storage",updateRole);
+     return() => {
+        window.removeEventListener("storage",updateRole); 
+    };
+   },[]); 
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-
+        setRole("");
         window.location.href = "/login";
     };
 
