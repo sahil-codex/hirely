@@ -35,6 +35,7 @@ export default function LoginPage(){
         return;
       }
           localStorage.setItem("role", data.user.role);
+          window.dispatchEvent(new Event("authChanged"));
           const role = data.user.role;
   
       if(role.trim().toUpperCase()==="RECRUITER"){

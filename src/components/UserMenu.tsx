@@ -15,6 +15,7 @@ export default function UserMenu(){
         };
      updateRole();
      window.addEventListener("storage",updateRole);
+     window.addEventListener("authChanged", updateRole);
      return() => {
         window.removeEventListener("storage",updateRole); 
     };
@@ -24,6 +25,7 @@ export default function UserMenu(){
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         setRole("");
+        window.dispatchEvent(new Event("authChanged"));
         window.location.href = "/login";
     };
 
