@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
 import UserMenu from "./UserMenu";
+import { usePathname } from "next/navigation";
 
 function isCandidateRole(role: string) {
   return role.trim().toUpperCase() === "CANDIDATE";
 }
 
 export function Navbar() {
-  const [role, setRole] = useState("");
   const [mounted, setMounted] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const pathname = usePathname();
+  const [user,setUser] = useState({
+    name:"",role:"",
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -20,16 +25,21 @@ export function Navbar() {
         const res = await fetch("/api/auth/me", { credentials: "include" });
         const data = await res.json();
         if (!cancelled && data.user) {
-          setRole(String(data.user.role ?? ""));
+          setUser({
+             name:data.user.fullName ?? "",
+             role:data.user.role??"",
+          });
           setIsLoggedIn(true);
           return;
         }
       } catch {
-        /* fall through to localStorage */
+  
       }
-      if (!cancelled) {
-        const storedRole = localStorage.getItem("role");
-        setRole(storedRole || "");
+      if (!cancelled ) {
+        const storedRole = localStorage.getItem("role") || "";
+        const storedName = localStorage.getItem("fullName") || "";
+
+        setUser({name:storedName,role:storedRole,});
         setIsLoggedIn(!!storedRole);
       }
     })().finally(() => {
@@ -40,50 +50,59 @@ export function Navbar() {
     };
   }, []);
 
-  const dashboardLink = isCandidateRole(role)
+  const dashboardLink = isCandidateRole(user.role)
     ? "/dashboard/candidate"
-    : "/dashboard";
+    : "/dashboard/recruiter";
 
   if (!mounted) {
     return (
-      <div className="w-full py-4">
-        <h1 className="text-xl font-semibold text-primary">Hirely</h1>
+      <nav className="border-b border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-4">
+        <h1 className="cursor-pointer text-3xl font-bold tracking-tight text-primary">Hirely</h1>
       </div>
+      </nav>
     );
   }
 
   return (
-    <nav className="w-full flex items-center justify-between py-4">
+    <nav className="border-b border-border bg-background">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
       <Link href="/">
-        <h1 className="text-xl font-semibold text-primary">Hirely</h1>
+        <h1 className="cursor-pointer text-3xl font-bold tracking-tight text-primary">Hirely</h1>
       </Link>
-      <div className="flex items-center gap-6 text-sm text-gray-600">
-        <Link href="/jobs" className="hover:text-primary transition">
+      <div className="flex items-center gap-10">
+        <Link href="/jobs" className={`transition-colors ${ pathname === "/jobs" ? "text-primary font-medium" : "text-zinc-400 hover:text-white"}`}>
           Jobs
         </Link>
         {isLoggedIn && (
-          <Link href={dashboardLink} className="hover:text-primary transition">
+            <Link href={dashboardLink} className={`transition-colors ${ pathname.startsWith("/dashboard") ? "text-primary font-medium": "text-zinc-400 hover:text-white"}`} >
             Dashboard
           </Link>
         )}
+        </div>
+        <div className="flex items-center gap-4">
         {isLoggedIn ? (
-          <UserMenu />
+          <>
+          <button type = "button" className="flex h-10 w-10 rounded-full items-center justify-center hover:bg-zinc-800 transition"><Bell size={18}/></button>
+          <UserMenu/>
+          </>
         ) : (
-          <div className="flex items-center gap-4">
+          <>
             <Link
               href="/login"
-              className="text-sm text-gray-600 hover:text-primary"
+              className=" text-zinc-400 hover:text-white transition"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="bg-primary text-white px-4 py-2 rounded-xl text-sm hover:opacity-90 transition"
+              className="rounded-xl bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-500"
             >
               Sign Up
             </Link>
-          </div>
+          </>
         )}
+      </div>
       </div>
     </nav>
   );
