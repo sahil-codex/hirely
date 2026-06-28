@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 export default function SignupPage(){
     const router = useRouter();
+    const [fullName,setFullName] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [role,setRole] = useState("CANDIDATE");
@@ -12,6 +13,10 @@ export default function SignupPage(){
     const handleSignup = async (e:any) => {
         e.preventDefault();
         setSuccess(""); 
+        if(fullName.trim().length<2){
+            alert("Full name must be at least 2 characters");
+            return;
+        }
         if(password.length<6){
             alert("Password must be at least 6 characters");
             return;
@@ -23,7 +28,7 @@ export default function SignupPage(){
                 headers:{
                     "Content-Type":"application/json",
                 },
-                body:JSON.stringify({email,password,role}),
+                body:JSON.stringify({fullName,email,password,role}),
             });
             const data = await res.json();
             if(!res.ok){
@@ -34,6 +39,7 @@ export default function SignupPage(){
             setTimeout(()=>{
                 router.push("/login");
             },2000);
+            setFullName("");
             setEmail("");
             setPassword("");
             setRole("CANDIDATE");
@@ -52,6 +58,7 @@ export default function SignupPage(){
             </h2>
             {success && ( <p className="text-green-500 text-sm mb-4 text-center">{success}</p>)}
              <div className="space-y-4">
+                <input placeholder="Full Name" type="text" className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary" value={fullName} onChange={(e)=>{setFullName(e.target.value); setSuccess(""); }} required/>
                 <input placeholder="Email" type="email" className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary" value={email} onChange={(e)=>{setEmail(e.target.value);  setSuccess(""); }} required/>
                 <input placeholder="Password" type = "password" value={password} className="w-full bg-transparent border border-border rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary"onChange={(e)=>{setPassword(e.target.value); setSuccess(""); }} required/>
                 <select className="w-full bg-transparent border border-border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary" value={role} onChange={(e)=>setRole(e.target.value)}>

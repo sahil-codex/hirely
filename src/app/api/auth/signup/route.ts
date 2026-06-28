@@ -16,7 +16,7 @@ export async function POST(req:Request){
                 {status:400}
                 );
             }
-              const {email,password,role} = parsed.data;
+              const {fullName,email,password,role} = parsed.data;
 
             const existingUser = await db
             .select({
@@ -37,6 +37,7 @@ export async function POST(req:Request){
         const result = await db
          .insert(users)
          .values({
+           fullName,
            email:email.toLowerCase(),
            passwordHash:hashedPassword,
            role,
