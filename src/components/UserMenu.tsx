@@ -1,58 +1,167 @@
+
 "use client";
 
-import { useEffect,useState } from "react";
-import {User} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import {
+  ChevronDown,
+  User,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+} from "lucide-react";
 
-export default function UserMenu(){
-    const [open,setOpen] = useState(false);
-    const [role,setRole] = useState("");
-    
-    useEffect(()=>{
-        const updateRole = () => {
-            const storedRole = localStorage.getItem("role") || "";
-            setRole(storedRole);
-        };
-     updateRole();
-     window.addEventListener("storage",updateRole);
-     window.addEventListener("authChanged", updateRole);
-     return() => {
-        window.removeEventListener("storage",updateRole); 
-    };
-   },[]); 
+type CurrentUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: "CANDIDATE" | "RECRUITER";
+};
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        setRole("");
-        window.dispatchEvent(new Event("authChanged"));
-        window.location.href = "/login";
-    };
+export default function UserMenu() {
+  const [user, setUser] = useState<CurrentUser | null>(null);
+  const [open, setOpen] = useState(false);
 
-    return (
-        <div className="relative">
-            <button onClick={() => setOpen(!open)}
-            className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition"><User size={20} /></button>
-            {open &&(
-                <div className="absolute right-0 mt-2 w-56 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl p-2 z-50">
-                    {role ==="CANDIDATE" && (
-                        <>
-                        <Link href= "/dashboard/candidate"
-                        className="block px-4 py-2 rounded-lg hover:bg-zinc-800">My Applications </Link>
-                        <Link href="/profile" className="block px-4 py-2 rounded-lg hover:bg-zinc-800">Profile</Link>
-                        </>
-                    )}
+  const menuRef = useRef<HTMLDivElement>(null);
 
-                    {role === "RECRUITER" &&(
-                        <>
-                        <Link href = "/dashboard/recruiter" className="block px-4 py-2 rounded-lg hover:bg-zinc-800">Recruiter Dashboard</Link>
-                        <Link href= "/profile"className="block px-4 py-2 rounded-lg hover:bg-zinc-800">Profile</Link>
-                        </>
-                    )}
+  const itemClass =
+    "flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-zinc-800 transition";
 
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 rounded-lg hover:bg-red-500/20 text-red-400">Logout</button>
-                    </div>
-            )}
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        setUser(data.user);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      localStorage.clear();
+
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <div className="relative" ref={menuRef}>
+      
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 rounded-full hover:bg-zinc-800 px-2 py-1 transition"
+      >
+        <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center font-semibold text-white">
+          {user.name.charAt(0).toUpperCase()}
         </div>
-    );
+
+        <ChevronDown
+          size={16}
+          className={`transition ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      
+      {open && (
+        <div className="absolute right-0 mt-3 w-72 rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl p-2 z-50">
+        
+          <div className="px-4 py-3 border-b border-zinc-800">
+            <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg text-white mb-3">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+
+            <p className="font-semibold text-white">
+              {user.name}
+            </p>
+
+            <p className="text-sm text-zinc-400 truncate">
+              {user.email}
+            </p>
+
+            <p className="text-xs text-blue-400 mt-1">
+              {user.role}
+            </p>
+          </div>
+
+          
+          <div className="py-2 flex flex-col gap-1">
+            <Link href="/profile" className={itemClass}>
+              <User size={18} />
+              <span>My Profile</span>
+            </Link>
+
+            {user.role === "CANDIDATE" && (
+              <Link
+                href="/dashboard/candidate"
+                className={itemClass}
+              >
+                <FileText size={18} />
+                <span>My Applications</span>
+              </Link>
+            )}
+
+            {user.role === "RECRUITER" && (
+              <Link
+                href="/dashboard/recruiter"
+                className={itemClass}
+              >
+                <LayoutDashboard size={18} />
+                <span>Recruiter Dashboard</span>
+              </Link>
+            )}
+
+            <div className="border-t border-zinc-800 my-2" />
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full text-left px-4 py-2 rounded-lg hover:bg-red-500/20 text-red-400 transition"
+            >
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
