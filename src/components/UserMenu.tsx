@@ -29,6 +29,7 @@ export default function UserMenu() {
 
   useEffect(() => {
     async function loadUser() {
+
       try {
         const res = await fetch("/api/auth/me", {
           credentials: "include",
@@ -37,6 +38,7 @@ export default function UserMenu() {
         if (!res.ok) return;
 
         const data = await res.json();
+        console.log(data);
         setUser(data.user);
       } catch (error) {
         console.error(error);
@@ -90,7 +92,7 @@ export default function UserMenu() {
         className="flex items-center gap-2 rounded-full hover:bg-zinc-800 px-2 py-1 transition"
       >
         <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center font-semibold text-white">
-          {user.name.charAt(0).toUpperCase()}
+          {user.name.charAt(0).toUpperCase() ?? "U"}
         </div>
 
         <ChevronDown
@@ -111,7 +113,7 @@ export default function UserMenu() {
             </div>
 
             <p className="font-semibold text-white">
-              {user.name}
+              {user.name ?? "User"}
             </p>
 
             <p className="text-sm text-zinc-400 truncate">
