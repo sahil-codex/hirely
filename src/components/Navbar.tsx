@@ -3,106 +3,170 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
-import UserMenu from "./UserMenu";
 import { usePathname } from "next/navigation";
+import UserMenu from "./UserMenu";
 
-function isCandidateRole(role: string) {
-  return role.trim().toUpperCase() === "CANDIDATE";
-}
+type CurrentUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: "CANDIDATE" | "RECRUITER";
+};
 
 export function Navbar() {
-  const [mounted, setMounted] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pathname = usePathname();
-  const [user,setUser] = useState({
-    name:"",role:"",
-  });
+
+  const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<CurrentUser | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
-        const data = await res.json();
-        if (!cancelled && data.user) {
-          setUser({
-             name:data.user.fullName ?? "",
-             role:data.user.role??"",
-          });
-          setIsLoggedIn(true);
-          return;
-        }
-      } catch {
-  
-      }
-      if (!cancelled ) {
-        const storedRole = localStorage.getItem("role") || "";
-        const storedName = localStorage.getItem("fullName") || "";
 
-        setUser({name:storedName,role:storedRole,});
-        setIsLoggedIn(!!storedRole);
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          if (!cancelled && data.user) {
+            const currentUser: CurrentUser = {
+              id: data.user.id,
+              name: data.user.fullName,
+              email: data.user.email,
+              role: data.user.role as "CANDIDATE" | "RECRUITER",
+            };
+
+            setUser(currentUser);
+
+            // Keep localStorage in sync
+            localStorage.setItem(
+              "user",
+              JSON.stringify(currentUser)
+            );
+
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch current user:", error);
       }
-    })().finally(() => {
-      if (!cancelled) setMounted(true);
+
+      // Fallback to localStorage
+      if (!cancelled) {
+        const storedUser = localStorage.getItem("user");
+
+        if (storedUser) {
+          try {
+            const parsedUser =
+              JSON.parse(storedUser) as CurrentUser;
+
+            setUser(parsedUser);
+          } catch {
+            localStorage.removeItem("user");
+          }
+        }
+      }
+    }
+
+    loadUser().finally(() => {
+      if (!cancelled) {
+        setMounted(true);
+      }
     });
+
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const dashboardLink = isCandidateRole(user.role)
-    ? "/dashboard/candidate"
-    : "/dashboard/recruiter";
+  const isLoggedIn = user !== null;
+
+  const dashboardLink =
+    user?.role === "RECRUITER"
+      ? "/dashboard/recruiter"
+      : "/dashboard/candidate";
 
   if (!mounted) {
     return (
       <nav className="border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-6 py-4">
-        <h1 className="cursor-pointer text-3xl font-bold tracking-tight text-primary">Hirely</h1>
-      </div>
+        <div className="mx-auto max-w-7xl px-6 py-4">
+          <h1 className="text-3xl font-bold tracking-tight text-primary">
+            Hirely
+          </h1>
+        </div>
       </nav>
     );
   }
 
   return (
     <nav className="border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-      <Link href="/">
-        <h1 className="cursor-pointer text-3xl font-bold tracking-tight text-primary">Hirely</h1>
-      </Link>
-      <div className="flex items-center gap-10">
-        <Link href="/jobs" className={`transition-colors ${ pathname === "/jobs" ? "text-primary font-medium" : "text-zinc-400 hover:text-white"}`}>
-          Jobs
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <Link href="/">
+          <h1 className="cursor-pointer text-3xl font-bold tracking-tight text-primary">
+            Hirely
+          </h1>
         </Link>
-        {isLoggedIn && (
-            <Link href={dashboardLink} className={`transition-colors ${ pathname.startsWith("/dashboard") ? "text-primary font-medium": "text-zinc-400 hover:text-white"}`} >
-            Dashboard
+
+        <div className="flex items-center gap-10">
+          <Link
+            href="/jobs"
+            className={`transition-colors ${
+              pathname === "/jobs"
+                ? "font-medium text-primary"
+                : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            Jobs
           </Link>
-        )}
+
+          {isLoggedIn && (
+            <Link
+              href={dashboardLink}
+              className={`transition-colors ${
+                pathname.startsWith("/dashboard")
+                  ? "font-medium text-primary"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Dashboard
+            </Link>
+          )}
         </div>
+
         <div className="flex items-center gap-4">
-        {isLoggedIn ? (
-          <>
-          <button type = "button" className="flex h-10 w-10 rounded-full items-center justify-center hover:bg-zinc-800 transition"><Bell size={18}/></button>
-          <UserMenu/>
-          </>
-        ) : (
-          <>
-            <Link
-              href="/login"
-              className=" text-zinc-400 hover:text-white transition"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-xl bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-500"
-            >
-              Sign Up
-            </Link>
-          </>
-        )}
-      </div>
+          {isLoggedIn && user ? (
+            <>
+              <button
+                type="button"
+                aria-label="Notifications"
+                className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-zinc-800"
+              >
+                <Bell size={18} />
+              </button>
+
+              <UserMenu user={user} />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-zinc-400 transition hover:text-white"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/signup"
+                className="rounded-xl bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-500"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
