@@ -5,6 +5,7 @@ import {
     MapPin,
     Pencil
 } from "lucide-react";
+import SkillBadge from "./SkillBadge";
 
 type ProfileHeroProps={
     fullName:string;
@@ -41,7 +42,7 @@ export default function ProfileHero({
                     {education}
                 </span>
           )}
-        <div className="flex flex-wrap gap-2 mt-6">{skills.slice(0,6).map((skill)=>(<span key={skill} className="rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-sm text-indigo-300">{skill}</span>))}
+        <div className="flex flex-wrap gap-2 mt-6">{skills.slice(0,6).map((skill)=>(<SkillBadge key={skill} skill={skill}/>))}
         </div>
         <button className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-5 py-3 text-white hover:bg-white/10 transition"><Pencil size={18}/>Edit Profile</button>
         </div>
