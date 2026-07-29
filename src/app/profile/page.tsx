@@ -1,15 +1,22 @@
 "use client";
 
 import { useEffect,useState } from "react";
+import ProfileHero from "@/components/profile/profileHero";
+import ProfileProgress from "@/components/profile/ProfleProgress";
 
 type Profile = {
     fullName: string;
+    headline?:string;
     bio?:string;
+    location?:string;
     experience?:number;
+    education?:string;
+    company?:string;
     skills?:string[];
     githubUrl?:string;
     linkedinUrl?:string;
     portfolioUrl?:string;
+    resumeUrl?:string;
 };
 
 export default function ProfilePage(){
@@ -17,12 +24,17 @@ export default function ProfilePage(){
     const [profile,setProfile] = 
     useState<Profile>({
         fullName:"",
+        headline:"",
         bio:"",
+        location:"",
         experience:0,
+        education:"",
+        company:"",
         skills:[],
         githubUrl:"",
         linkedinUrl:"",
         portfolioUrl:"",
+        resumeUrl:"",
     });
 
     const [loading,setLoading] = useState(true);
@@ -103,6 +115,18 @@ export default function ProfilePage(){
                 <h1 className="text-4xl font-bold text-white">Profile</h1>
                 <p className="text-zinc-400 mt-2">Manage your professional profile</p>
             </div>
+            <ProfileHero
+                fullName={profile.fullName}
+                headline={profile.headline}
+                location={profile.location}
+                experience={profile.experience}
+                education={profile.education}
+                skills={profile.skills}
+                />
+
+                <div className="mt-6">
+                <ProfileProgress profile={profile} />
+                </div>
             <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl">
