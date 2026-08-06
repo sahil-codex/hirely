@@ -2,7 +2,7 @@
 
 import { useEffect,useState } from "react";
 import ProfileHero from "@/components/profile/profileHero";
-import ProfileProgress from "@/components/profile/ProfileProgress";
+import ProfileProgress from "src/components/profile/ProfileProgress";
 
 
 type Profile = {
