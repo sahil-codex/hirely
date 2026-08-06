@@ -58,3 +58,19 @@ export async function updateProfile(
     .returning();
     return result[0];
 }
+
+export async function updateResumeUrl(
+  userId: string,
+  resumeUrl: string
+) {
+  const result = await db
+    .update(candidateProfiles)
+    .set({
+      resumeUrl,
+      updatedAt: new Date(),
+    })
+    .where(eq(candidateProfiles.userId, userId))
+    .returning();
+
+  return result[0];
+}
