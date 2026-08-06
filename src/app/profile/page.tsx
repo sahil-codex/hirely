@@ -2,7 +2,8 @@
 
 import { useEffect,useState } from "react";
 import ProfileHero from "@/components/profile/profileHero";
-import ProfileProgress from "@/components/profile/ProfleProgress";
+import ProfileProgress from "@/components/profile/ProfileProgress";
+
 
 type Profile = {
     fullName: string;
@@ -123,92 +124,190 @@ export default function ProfilePage(){
                 education={profile.education}
                 skills={profile.skills}
                 />
+  
 
-                <div className="mt-6">
-                <ProfileProgress profile={profile} />
-                </div>
-            <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
-                {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl">
-                    {error}
-                    </div>
-                )}
-                {success && (
-                    <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl" >
-                        {success}
-                        </div>
-                )}
-                <input value={profile.fullName}
-                     onChange={(e)=>setProfile({...profile,fullName:e.target.value,})}
-                     placeholder="Full Name"
-                     className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
-                     <textarea value={profile.bio ?? ""}
-                     onChange={(e)=>setProfile({...profile,bio:e.target.value,})}
-                     placeholder="Bio"
-                     rows={5}
-                     className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
-                     
-                     <input type="number"
-                     value={profile.experience ??0}
-                     onChange={(e)=> setProfile({...profile,experience:Number(e.target.value),})}
-                     placeholder="Years of Experience"
-                     className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
-                    
-                     <input value={profile.skills?.join(", ") ?? ""}
-                     onChange={(e)=> setProfile({
-                        ...profile,skills:e.target.value
-                                  .split(",")
-                                  .map((s)=>s.trim())
-                                  .filter(Boolean),
+<ProfileProgress profile={profile} />
 
-                     })}
-                     placeholder="Skills (comma separated)"
-                     className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
+<div className="mt-8 rounded-2xl border border-border bg-card p-8 space-y-8">
+  <div>
+    <h2 className="text-2xl font-semibold text-white">
+      Professional Information
+    </h2>
 
-                     <input 
-                        value = {profile.githubUrl ?? ""}
-                         onChange={(e)=>
-                             setProfile({
-                                ...profile,
-                                   githubUrl:e.target.value,
-                             })
-                         }
-                         placeholder="GitHub URL"
-                         className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
+    <p className="mt-1 text-zinc-400">
+      Keep your profile updated so recruiters know you better.
+    </p>
+  </div>
 
-                         <input 
-                          value={profile.linkedinUrl ?? ""}
-                          onChange={(e)=>
-                             setProfile({
-                                ...profile,
-                                linkedinUrl:e.target.value,
-                             })
-                          } 
-                          placeholder="LinkedIn URL"
-                          className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
+  {error && (
+    <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-red-400">
+      {error}
+    </div>
+  )}
 
-                           <input 
-                          value={profile.portfolioUrl ?? ""}
-                          onChange={(e)=>
-                             setProfile({
-                                ...profile,
-                                portfolioUrl:e.target.value,
-                             })
-                          } 
-                          placeholder="Portfolio URL"
-                          className="w-full bg-transparent border border-border rounded-xl px-4 py-3"/>
+  {success && (
+    <div className="rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-green-400">
+      {success}
+    </div>
+  )}
 
-                         <button
-                           onClick = {handleSave}
-                           disabled = {saving}
-                           className="bg-primary px-6 py-4 rounded-xl text-white hover:opacity-90 disabled:opacity-50">
-                           {saving
-                             ? "Saving..."
-                             : "Save Profile"}
-                             </button>
+  <div className="grid gap-5 md:grid-cols-2">
+    <input
+      value={profile.fullName}
+      placeholder="Full Name"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          fullName: e.target.value,
+        })
+      }
+      className="input"
+    />
 
-                    
-            </div>
-        </div>
-    );
-}
+    <input
+      value={profile.headline ?? ""}
+      placeholder="Professional Headline"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          headline: e.target.value,
+        })
+      }
+      className="input"
+    />
+
+    <input
+      value={profile.location ?? ""}
+      placeholder="Location"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          location: e.target.value,
+        })
+      }
+      className="input"
+    />
+
+    <input
+      type="number"
+      value={profile.experience ?? ""}
+      placeholder="Years of Experience"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          experience: Number(e.target.value),
+        })
+      }
+      className="input"
+    />
+
+    <input
+      value={profile.education ?? ""}
+      placeholder="Education"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          education: e.target.value,
+        })
+      }
+      className="input"
+    />
+
+    <input
+      value={profile.company ?? ""}
+      placeholder="Current Company"
+      onChange={(e) =>
+        setProfile({
+          ...profile,
+          company: e.target.value,
+        })
+      }
+      className="input"
+    />
+  </div>
+
+  <textarea
+    rows={5}
+    value={profile.bio ?? ""}
+    placeholder="Tell recruiters about yourself..."
+    onChange={(e) =>
+      setProfile({
+        ...profile,
+        bio: e.target.value,
+      })
+    }
+    className="input resize-none"
+  />
+
+  <input
+    value={profile.skills?.join(", ") ?? ""}
+    placeholder="React, Next.js, PostgreSQL..."
+    onChange={(e) =>
+      setProfile({
+        ...profile,
+        skills: e.target.value
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+      })
+    }
+    className="input"
+  />
+
+  <div>
+    <h2 className="mb-4 text-xl font-semibold text-white">
+      Professional Links
+    </h2>
+
+    <div className="grid gap-5 md:grid-cols-3">
+      <input
+        value={profile.githubUrl ?? ""}
+        placeholder="GitHub URL"
+        onChange={(e) =>
+          setProfile({
+            ...profile,
+            githubUrl: e.target.value,
+          })
+        }
+        className="input"
+      />
+
+      <input
+        value={profile.linkedinUrl ?? ""}
+        placeholder="LinkedIn URL"
+        onChange={(e) =>
+          setProfile({
+            ...profile,
+            linkedinUrl: e.target.value,
+          })
+        }
+        className="input"
+      />
+
+      <input
+        value={profile.portfolioUrl ?? ""}
+        placeholder="Portfolio URL"
+        onChange={(e) =>
+          setProfile({
+            ...profile,
+            portfolioUrl: e.target.value,
+          })
+        }
+        className="input"
+      />
+    </div>
+  </div>
+
+  <div className="flex justify-end">
+    <button
+      onClick={handleSave}
+      disabled={saving}
+      className="rounded-xl bg-primary px-6 py-3 text-white transition hover:opacity-90 disabled:opacity-50"
+    >
+      {saving ? "Saving..." : "Save Changes"}
+    </button>
+  </div>
+</div>
+</div>
+);
+}          
