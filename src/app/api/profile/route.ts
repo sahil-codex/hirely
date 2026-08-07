@@ -36,7 +36,7 @@ export async function PATCH(req:NextRequest){
             );
         }
         const body = await req.json();
-        console.log(body);
+        console.log("Incoming body:",body);
 
         const parsed = profileUpdateSchema.safeParse(body);
         if(!parsed.success){

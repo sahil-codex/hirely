@@ -3,12 +3,7 @@ import { z } from "zod";
 
 import { candidateProfiles } from "@/db/schema";
 
-const baseProfileSchema = createInsertSchema(candidateProfiles).omit({
-  id: true,
-  userId: true,
-  createdAt: true,
-  updatedAt: true,
-});
+const baseProfileSchema = z.object({});
 
 const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
   z.preprocess(
