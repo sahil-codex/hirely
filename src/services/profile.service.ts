@@ -4,7 +4,7 @@ import{
     updateProfile,
 } from "@/repositories/profile.repository";
 
-import { ProfileInput } from "@/validators/profile.validator";
+import { ProfileUpdateInput } from "@/validators/profile.validator";
 
 
 type AuthUser = {
@@ -20,7 +20,7 @@ export async function getProfileService(user:AuthUser){
 }
 
 export async function saveProfileService(
-    user:AuthUser,data:ProfileInput
+    user:AuthUser,data:ProfileUpdateInput
 ){
     if(user.role!=="CANDIDATE"){
         throw new Error("Only candidates can update profiles");

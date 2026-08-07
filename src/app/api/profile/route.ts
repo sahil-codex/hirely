@@ -5,7 +5,7 @@ import {
     getProfileService,
     saveProfileService,
 } from "@/services/profile.service";
-import { profileSchema } from "@/validators/profile.validator";
+import { profileUpdateSchema } from "@/validators/profile.validator";
 
 export async function GET(req:NextRequest){
     try{
@@ -38,7 +38,7 @@ export async function PATCH(req:NextRequest){
         const body = await req.json();
         console.log(body);
 
-        const parsed = profileSchema.safeParse(body);
+        const parsed = profileUpdateSchema.safeParse(body);
         if(!parsed.success){
             return NextResponse.json(
                 {error:parsed.error.flatten()},
