@@ -65,32 +65,54 @@ const skillsSchema = z
         .max(200,"Education too large")
         .optional(),
 
-        githubUrl:z
-        .string()
-        .trim()
-        .url("Invalid GitHub URL")
-        .refine(
-            (url) => new URL(url).hostname.includes("github.com"),
-            {
-                message:"Must be a GitHub URL",
-            }
-        )
-        .optional()
-        .or(z.literal("")),
+       githubUrl: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .superRefine((value, ctx) => {
+    if (!value) return; 
+    try {
+      const url = new URL(value);
 
-        linkedinUrl:z
-        .string()
-        .trim()
-        .url("Invalid LinkedIn URL")
-        .refine(
-           (url) =>
-           new URL(url).hostname.includes("linkedin.com"),
-           {
-           message: "Must be a LinkedIn URL",
-           }
-        )
-        .optional()
-        .or(z.literal("")),
+      if (!url.hostname.includes("github.com")) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a GitHub URL",
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid GitHub URL",
+      });
+    }
+  }),
+
+        linkedinUrl: z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .superRefine((value, ctx) => {
+    if (!value) return;
+
+    try {
+      const url = new URL(value);
+
+      if (!url.hostname.includes("linkedin.com")) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a LinkedIn URL",
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid LinkedIn URL",
+      });
+    }
+  }),
 
         resumeUrl:z
          .string()

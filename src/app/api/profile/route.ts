@@ -36,6 +36,8 @@ export async function PATCH(req:NextRequest){
             );
         }
         const body = await req.json();
+        console.log(body);
+
         const parsed = profileSchema.safeParse(body);
         if(!parsed.success){
             return NextResponse.json(
