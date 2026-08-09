@@ -20,6 +20,9 @@ type ProfileData = {
     experience?:number;
     company?:string;
     education?:string;
+    githubUrl?:string;
+    linkedinUrl?:string;
+    portfolioUrl?:string;
     resumeUrl?:string;
 }
 export async function createProfile(data:{
@@ -34,10 +37,13 @@ export async function createProfile(data:{
         headline:data.headline,
         bio:data.bio,
         location:data.location,
-        skills:data.skills||[],
+        skills:data.skills??[],
         experience:data.experience,
         company:data.company,
         education:data.education,
+        githubUrl: data.githubUrl,
+      linkedinUrl: data.linkedinUrl,
+      portfolioUrl: data.portfolioUrl,
         resumeUrl:data.resumeUrl,
     })
     .returning();
@@ -51,8 +57,19 @@ export async function updateProfile(
     const result = await db
     .update(candidateProfiles)
     .set({
-        ...data,
-        updatedAt:new Date(),
+         fullName: data.fullName,
+      headline: data.headline,
+      bio: data.bio,
+      location: data.location,
+      skills: data.skills,
+      experience: data.experience,
+      company: data.company,
+      education: data.education,
+      githubUrl: data.githubUrl,
+      linkedinUrl: data.linkedinUrl,
+      portfolioUrl: data.portfolioUrl,
+      resumeUrl: data.resumeUrl,
+      updatedAt: new Date(),
     })
     .where(eq(candidateProfiles.userId,userId))
     .returning();

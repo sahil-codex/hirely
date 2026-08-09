@@ -43,6 +43,13 @@
       "when": 1782561589385,
       "tag": "0005_needy_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786269912196,
+      "tag": "0006_tricky_emma_frost",
+      "breakpoints": true
     }
   ]
 }

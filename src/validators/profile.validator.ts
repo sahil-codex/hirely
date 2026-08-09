@@ -5,7 +5,13 @@ const baseProfileSchema = z.object({});
 
 const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
   z.preprocess(
-    (value) => (value === "" ? undefined : value),
+    (value) => {
+      if (value === "" || value === null) {
+        return undefined;
+      }
+
+      return value;
+    },
     schema.optional()
   );
 
