@@ -14,7 +14,14 @@ export async function uploadResumeService(
     `${userId}-${Date.now()}`
   );
 
-const profile =  await updateResumeUrl(userId, resumeUrl);
+  console.log("CLOUDINARY URL:", resumeUrl);
+
+  const profile = await updateResumeUrl(
+    userId,
+    resumeUrl
+  );
+
+  console.log("PROFILE AFTER UPDATE:", profile);
 
   return profile.resumeUrl;
 }

@@ -80,6 +80,11 @@ export async function updateResumeUrl(
   userId: string,
   resumeUrl: string
 ) {
+  console.log("UPDATE RESUME:", {
+    userId,
+    resumeUrl,
+  });
+
   const result = await db
     .update(candidateProfiles)
     .set({
@@ -93,8 +98,12 @@ export async function updateResumeUrl(
       resumeUrl: candidateProfiles.resumeUrl,
     });
 
+  console.log("UPDATE RESULT:", result);
+
   if (!result[0]) {
-    throw new Error("Candidate profile not found");
+    throw new Error(
+      `Candidate profile not found for userId: ${userId}`
+    );
   }
 
   return result[0];
