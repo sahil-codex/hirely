@@ -98,7 +98,7 @@ export async function updateResumeUrl(
       resumeUrl: candidateProfiles.resumeUrl,
     });
 
-  console.log("UPDATE RESULT:", result);
+  
 
   if (!result[0]) {
     throw new Error(

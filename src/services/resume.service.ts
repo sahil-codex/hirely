@@ -21,7 +21,6 @@ export async function uploadResumeService(
     resumeUrl
   );
 
-  console.log("PROFILE AFTER UPDATE:", profile);
 
   return profile.resumeUrl;
 }
