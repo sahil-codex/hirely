@@ -1,7 +1,5 @@
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
 
-import { candidateProfiles } from "@/db/schema";
+import { z } from "zod";
 
 const baseProfileSchema = z.object({});
 
