@@ -14,7 +14,7 @@ export async function uploadResumeService(
     `${userId}-${Date.now()}`
   );
 
-  await updateResumeUrl(userId, resumeUrl);
+const profile =  await updateResumeUrl(userId, resumeUrl);
 
-  return resumeUrl;
+  return profile.resumeUrl;
 }

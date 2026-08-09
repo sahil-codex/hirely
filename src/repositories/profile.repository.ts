@@ -87,7 +87,15 @@ export async function updateResumeUrl(
       updatedAt: new Date(),
     })
     .where(eq(candidateProfiles.userId, userId))
-    .returning();
+    .returning({
+      id: candidateProfiles.id,
+      userId: candidateProfiles.userId,
+      resumeUrl: candidateProfiles.resumeUrl,
+    });
+
+  if (!result[0]) {
+    throw new Error("Candidate profile not found");
+  }
 
   return result[0];
 }
