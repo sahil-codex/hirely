@@ -19,37 +19,41 @@ export async function createJobService(body:any,recruiterId:string){
     });
 }
 
-export async function searchJobsService(query:any) {
-    const page = Number(query.page || 1);
+
+type SearchJobsQuery = {
+        keyword?:string;
+        location?:string;
+        minSalary?:number;
+        skills?:string[]|undefined;
+        page?:string|number;
+    };
+export async function searchJobsService(
+    query:SearchJobsQuery
+) {
+    const page = Math.max(Number(query.page || 1),1);
     const limit = 10;
     const offset = (page-1)*limit;
 
-    const {jobs,totalCount} =  await searchJobs({
-        keyword:query.keyword,
-        location:query.location,
-        minSalary:
-            query.minSalary !== undefined && query.minSalary !== ""
-                ? Number(query.minSalary)
-                : undefined,
-        skills: Array.isArray(query.skills)
-            ? query.skills
-            : query.skills
-              ? String(query.skills)
-                    .split(",")
-                    .map((s: string) => s.trim())
-                    .filter(Boolean)
-              : undefined,
-        limit,
-        offset,
+  const { jobs, totalCount } =
+    await searchJobs({
+      keyword:query.keyword,
+      location:query.location,
+      minSalary:query.minSalary,
+      skills:query.skills,
+      limit,
+      offset,
     });
-    
-    const totalPages = Math.ceil(totalCount / limit);
-    return {
-        jobs,
-        totalCount,
-        totalPages,
-        currentPage:page,
-    };
+
+  const totalPages = Math.ceil(
+    totalCount / limit
+  );
+
+  return {
+    jobs,
+    totalCount,
+    totalPages,
+    currentPage: page,
+  };
 }
 
 export async function getRecruiterjobsService(user:{

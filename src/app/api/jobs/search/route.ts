@@ -20,12 +20,12 @@ export async function GET(req:Request){
                 {status:400}
             );
          }
-        const jobs = await searchJobsService(parsed.data);
-        return NextResponse.json({jobs});
+        const result = await searchJobsService(parsed.data);
+        return NextResponse.json(result);
 
-    }catch(err:any){
+    }catch(err:unknown){
           return NextResponse.json(
-            {error :err.message || "Something went wrong"},
+            {error :err instanceof Error ?err.message : "Something went wrong"},
             {status:500}
           );
     }
