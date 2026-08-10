@@ -3,7 +3,7 @@ import ResumeSection from "@/components/profile/ResumeSection";
 import { useEffect, useState } from "react";
 import ProfileHero from "@/components/profile/profileHero";
 import ProfileProgress from "src/components/profile/ProfileProgress";
-
+import { X } from "lucide-react";
 type Profile = {
   fullName: string;
   headline?: string;
@@ -243,20 +243,58 @@ export default function ProfilePage() {
           className="input resize-none"
         />
 
-        <input
-          value={profile.skills?.join(", ") ?? ""}
-          placeholder="React, Next.js, PostgreSQL..."
-          onChange={(e) =>
-            setProfile({
-              ...profile,
-              skills: e.target.value
-                .split(",")
-                .map((s) => s.trim())
-                .filter(Boolean),
-            })
+        <div className="space-y-3 md:col-span-2">
+  <label className="text-sm font-medium text-white">
+    Skills
+  </label>
+
+  <input
+    placeholder="Type a skill and press Enter"
+    className="input"
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+
+        const skill = e.currentTarget.value.trim();
+
+        if (!skill) return;
+
+        setProfile((prev) => ({
+          ...prev,
+          skills: prev.skills?.includes(skill)
+            ? prev.skills
+            : [...(prev.skills ?? []), skill],
+        }));
+
+        e.currentTarget.value = "";
+      }
+    }}
+  />
+
+  <div className="flex flex-wrap gap-2">
+    {profile.skills?.map((skill) => (
+      <div
+        key={skill}
+        className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary"
+      >
+        <span>{skill}</span>
+
+        <button
+          type="button"
+          onClick={() =>
+            setProfile((prev) => ({
+              ...prev,
+              skills: prev.skills?.filter((s) => s !== skill),
+            }))
           }
-          className="input"
-        />
+          className="text-zinc-400 hover:text-red-400"
+        >
+           <X className="h-4 w-4" />
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
 
         <div>
           <h2 className="mb-4 text-xl font-semibold text-white">
