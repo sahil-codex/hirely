@@ -1,5 +1,5 @@
 "use client";
-
+import ResumeSection from "@/components/profile/ResumeSection";
 import { useEffect, useState } from "react";
 import ProfileHero from "@/components/profile/profileHero";
 import ProfileProgress from "src/components/profile/ProfileProgress";
@@ -38,9 +38,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   const [savingProfile, setSavingProfile] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
-
-  const [resume, setResume] = useState<File | null>(null);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -111,54 +108,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleResumeUpload = async () => {
-  if (!resume) {
-    setError("Please select a resume first.");
-    return;
-  }
-
-  try {
-    setUploadingResume(true);
-    setError("");
-    setSuccess("");
-
-    const formData = new FormData();
-    formData.append("resume", resume);
-
-    const res = await fetch("/api/profile/resume", {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to upload resume.");
-    }
-
-    setProfile((prev) => ({
-      ...prev,
-      resumeUrl: data.resumeUrl,
-    }));
-
-    setResume(null);
-    setSuccess("Resume uploaded successfully.");
-  } catch (err) {
-    if (err instanceof Error) {
-      setError(err.message);
-    } else {
-      setError("Something went wrong.");
-    }
-  } finally {
-    setUploadingResume(false);
-  }
-};
-
-  if (loading) {
-    return <p className="text-white">Loading profile...</p>;
-  }
-
+  
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
       <div className="mb-8">
@@ -352,54 +302,15 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <label className="text-sm font-medium text-white">
-            Resume
-          </label>
-
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={(e) =>
-              setResume(e.target.files?.[0] ?? null)
-            }
-            className="block w-full text-sm text-zinc-300
-              file:mr-4
-              file:rounded-lg
-              file:border-0
-              file:bg-primary
-              file:px-4
-              file:py-2
-              file:text-white
-              hover:file:opacity-90"
-          />
-
-          {resume && (
-            <p className="text-sm text-zinc-400">
-              Selected: {resume.name}
-            </p>
-          )}
-
-          <button
-            type="button"
-            onClick={handleResumeUpload}
-            disabled={uploadingResume || !resume}
-            className="rounded-lg bg-primary px-4 py-2 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {uploadingResume ? "Uploading..." : "Upload Resume"}
-          </button>
-
-          {profile.resumeUrl && (
-            <a
-              href={profile.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-primary underline"
-            >
-              View Uploaded Resume
-            </a>
-          )}
-        </div>
+         <ResumeSection
+    resumeUrl={profile.resumeUrl}
+    onUploaded={(resumeUrl) =>
+      setProfile((prev) => ({
+        ...prev,
+        resumeUrl,
+      }))
+    }
+  />
 
         <div className="flex justify-end">
           <button
