@@ -20,23 +20,47 @@ export async function applyToJobService(user:any,jobId:string){
 }
 
 export async function getApplicationsForJobService(
-    user:{userId:string;role:string},
-    jobId:string
-){
-    if(user.role!=="RECRUITER"){
-        throw new Error("Only recruiters allowed");
-    }
-    if(!jobId){
-        throw new Error("Job ID required");
-    }
-    return await getApplicationsByJob(jobId);
+  user: {
+    userId: string;
+    role: string;
+  },
+  jobId: string
+) {
+  if (user.role !== "RECRUITER") {
+    throw new Error("Only recruiters allowed");
+  }
+
+  if (!jobId) {
+    throw new Error("Job ID required");
+  }
+
+  return await getApplicationsByJob(
+    jobId,
+    user.userId
+  );
 }
 
-export async function updateApplicationsStatusService( user:{role:string},applicationId:string,status:"SHORTLISTED"|"REJECTED"){
-   if(user.role!=="RECRUITER"){
+export async function updateApplicationsStatusService(
+  user: {
+    userId: string;
+    role: string;
+  },
+  applicationId: string,
+  status: "SHORTLISTED" | "REJECTED"
+) {
+  if (user.role !== "RECRUITER") {
     throw new Error("Forbidden");
-   }
-   return await updateApplicationsStatus(applicationId,status);
+  }
+
+  if (!applicationId) {
+    throw new Error("Application ID required");
+  }
+
+  return await updateApplicationsStatus(
+    applicationId,
+    user.userId,
+    status
+  );
 }
 
 export async function getCandidateApplicationsService(user:{userId:string,role:string;}){

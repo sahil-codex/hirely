@@ -1,24 +1,61 @@
 import { db } from "@/lib/drizzle";
-import { applications,users,jobs} from "@/db/schema";
+import { applications,users,jobs,candidateProfiles} from "@/db/schema";
 import {eq,and,desc} from "drizzle-orm";
 
 
-export async function getApplicationsByJob(jobId:string){
-    const result = await db 
-     .select({
-        id: applications.id,
-        status: applications.status,
-        createdAt: applications.createdAt,
+export async function getApplicationsByJob(
+  jobId: string,
+  recruiterId: string
+) {
+  const result = await db
+    .select({
+      applicationId: applications.id,
+      status: applications.status,
+      appliedAt: applications.createdAt,
 
-        userId:users.id,
-        email:users.email,
+      candidate: {
+        id: users.id,
+        fullName: users.fullName,
+        email: users.email,
 
-     })
-     .from (applications)
-     .innerJoin(users,eq(applications.userId,users.id))
-     .where(eq(applications.jobId,jobId))
-     .orderBy(desc(applications.createdAt));
-     return result;
+        headline: candidateProfiles.headline,
+        location: candidateProfiles.location,
+        skills: candidateProfiles.skills,
+        experience: candidateProfiles.experience,
+        education: candidateProfiles.education,
+        resumeUrl: candidateProfiles.resumeUrl,
+      },
+    })
+    .from(applications)
+
+    .innerJoin(
+      jobs,
+      eq(applications.jobId, jobs.id)
+    )
+
+    .innerJoin(
+      users,
+      eq(applications.userId, users.id)
+    )
+
+    .leftJoin(
+      candidateProfiles,
+      eq(
+        applications.userId,
+        candidateProfiles.userId
+      )
+    )
+
+    .where(
+      and(
+        eq(applications.jobId, jobId),
+        eq(jobs.recruiterId, recruiterId)
+      )
+    )
+
+    .orderBy(desc(applications.createdAt));
+
+  return result;
 }
 export async function createApplication(userId:string,jobId:string) {
     const result= await db
@@ -45,18 +82,42 @@ export async function checkExistingApplication(userId:string,jobId:string){
 }
 
 export async function updateApplicationsStatus(
-    applicationId:string,status:"SHORTLISTED"|"REJECTED"
-){
-    const result = await db
+  applicationId: string,
+  recruiterId: string,
+  status: "SHORTLISTED" | "REJECTED"
+) {
+  const application = await db
+    .select({
+      applicationId: applications.id,
+    })
+    .from(applications)
+    .innerJoin(
+      jobs,
+      eq(applications.jobId, jobs.id)
+    )
+    .where(
+      and(
+        eq(applications.id, applicationId),
+        eq(jobs.recruiterId, recruiterId)
+      )
+    )
+    .limit(1);
+
+  if (!application[0]) {
+    throw new Error(
+      "Application not found or unauthorized"
+    );
+  }
+
+  const result = await db
     .update(applications)
-    .set({status})
-    .where(eq(applications.id,applicationId))
+    .set({ status })
+    .where(
+      eq(applications.id, applicationId)
+    )
     .returning();
 
-    if(!result.length){
-        throw new Error("Application not found");
-    }
-    return result[0];
+  return result[0];
 }
 
 export async function getApplicationsByUser(userId:string){
