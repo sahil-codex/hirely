@@ -39,7 +39,7 @@ export default function LoginPage(){
           const role = data.user.role;
   
       if(role.trim().toUpperCase()==="RECRUITER"){
-        router.push("/dashboard");
+        router.push("/dashboard/recruiter");
       }else{
         router.push("/dashboard/candidate");
       }
