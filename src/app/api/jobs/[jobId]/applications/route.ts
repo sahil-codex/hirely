@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/getUser";
 import {
-  updateApplicationsStatusService,
+  getApplicationsForJobService,
 } from "@/services/application.service";
 
 type RouteContext = {
   params: Promise<{
-    applicationId: string;
+    jobId: string;
   }>;
 };
 
-export async function PATCH(
-  req: Request,
+export async function GET(
+  _req: Request,
   { params }: RouteContext
 ) {
   try {
@@ -31,43 +31,30 @@ export async function PATCH(
       );
     }
 
-    const { applicationId } = await params;
+    const { jobId } = await params;
 
-    if (!applicationId) {
+    if (!jobId) {
       return NextResponse.json(
-        { error: "Application ID is required" },
+        { error: "Job ID is required" },
         { status: 400 }
       );
     }
 
-    const { status } = await req.json();
-
-    if (
-      status !== "SHORTLISTED" &&
-      status !== "REJECTED"
-    ) {
-      return NextResponse.json(
+    const applications =
+      await getApplicationsForJobService(
         {
-          error:
-            "Status must be SHORTLISTED or REJECTED",
+          userId: user.userId,
+          role: user.role,
         },
-        { status: 400 }
-      );
-    }
-
-    const application =
-      await updateApplicationsStatusService(
-        user,
-        applicationId,
-        status
+        jobId
       );
 
     return NextResponse.json({
-      application,
+      applications,
     });
   } catch (err: unknown) {
     console.error(
-      "UPDATE APPLICATION STATUS ERROR:",
+      "GET JOB APPLICATIONS ERROR:",
       err
     );
 
