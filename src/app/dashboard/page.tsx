@@ -31,7 +31,7 @@ export default function DashboardPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [jobToDelete, setJobToDelete] = useState<string | null>(null);
 
-  // Fetch recruiter's jobs
+ 
   useEffect(() => {
     const fetchMyJobs = async () => {
       try {
@@ -57,7 +57,7 @@ export default function DashboardPage() {
     fetchMyJobs();
   }, []);
 
-  // Create job
+
   const handleCreateJob = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
@@ -113,13 +113,13 @@ export default function DashboardPage() {
     }
   };
 
-  // Open delete confirmation
+
   const handleDeleteClick = (id: string) => {
     setJobToDelete(id);
     setShowConfirm(true);
   };
 
-  // Delete job
+  
   const confirmDelete = async () => {
     if (!jobToDelete) return;
 
@@ -143,8 +143,7 @@ export default function DashboardPage() {
         prev.filter((job) => job.id !== jobToDelete)
       );
 
-      // If the deleted job was selected,
-      // close its applications section too.
+      
       if (selectedJob === jobToDelete) {
         setSelectedJob(null);
       }
@@ -161,7 +160,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Show / hide applications for a job
+ 
   const handleViewApplication = (jobId: string) => {
     setSelectedJob((prev) =>
       prev === jobId ? null : jobId
@@ -174,7 +173,7 @@ export default function DashboardPage() {
         Recruiter Dashboard
       </h1>
 
-      {/* Create Job Form */}
+      
       <form
         onSubmit={handleCreateJob}
         className="bg-card border border-border rounded-2xl space-y-4 p-6"
@@ -240,7 +239,7 @@ export default function DashboardPage() {
         </button>
       </form>
 
-      {/* My Jobs */}
+     
       <div className="space-y-6 mt-8">
         <h2 className="text-lg font-semibold text-white">
           My Jobs
@@ -317,7 +316,7 @@ export default function DashboardPage() {
                   </button>
                 </div>
 
-                {/* Applications */}
+               
                 {selectedJob === job.id && (
                   <RecruiterApplications
                     jobId={job.id}

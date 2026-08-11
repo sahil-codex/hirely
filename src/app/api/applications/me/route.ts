@@ -1,21 +1,8 @@
 import { NextResponse } from "next/server";
-
 import { getUserFromRequest } from "@/lib/getUser";
+import { getCandidateApplicationsService } from "@/services/application.service";
 
-import {
-  getApplicationsForJobService,
-} from "@/services/application.service";
-
-type RouteContext = {
-  params: Promise<{
-    jobId: string;
-  }>;
-};
-
-export async function GET(
-  _req: Request,
-  { params }: RouteContext
-) {
+export async function GET() {
   try {
     const user = await getUserFromRequest();
 
@@ -26,30 +13,15 @@ export async function GET(
       );
     }
 
-    const { jobId } = await params;
-
-    if (!jobId) {
-      return NextResponse.json(
-        { error: "Job ID is required" },
-        { status: 400 }
-      );
-    }
-
     const applications =
-      await getApplicationsForJobService(
-        {
-          userId: user.userId,
-          role: user.role,
-        },
-        jobId
-      );
+      await getCandidateApplicationsService(user);
 
     return NextResponse.json({
       applications,
     });
   } catch (err: unknown) {
     console.error(
-      "GET JOB APPLICATIONS ERROR:",
+      "GET MY APPLICATIONS ERROR:",
       err
     );
 
@@ -57,15 +29,6 @@ export async function GET(
       err instanceof Error
         ? err.message
         : "Something went wrong";
-
-    if (
-      message === "Only recruiters allowed"
-    ) {
-      return NextResponse.json(
-        { error: message },
-        { status: 403 }
-      );
-    }
 
     return NextResponse.json(
       { error: message },
