@@ -31,7 +31,7 @@ export function Navbar() {
         if (res.ok) {
           const data = await res.json();
 
-          if (!cancelled && data.user) {
+          if (data.user) {
             const currentUser: CurrentUser = {
               id: data.user.id,
               name: data.user.fullName,
@@ -39,32 +39,33 @@ export function Navbar() {
               role: data.user.role as "CANDIDATE" | "RECRUITER",
             };
 
-            setUser(currentUser);
-
-            localStorage.setItem(
-              "user",
-              JSON.stringify(currentUser)
-            );
-
+            if (!cancelled) {
+              setUser(currentUser);
+              localStorage.setItem("user", JSON.stringify(currentUser));
+            }
             return;
           }
         }
+        
+        if (!cancelled) {
+          setUser(null);
+          localStorage.removeItem("user");
+        }
       } catch (error) {
         console.error("Failed to fetch current user:", error);
-      }
-
-      
-      if (!cancelled) {
-        const storedUser = localStorage.getItem("user");
-
-        if (storedUser) {
-          try {
-            const parsedUser =
-              JSON.parse(storedUser) as CurrentUser;
-
-            setUser(parsedUser);
-          } catch {
-            localStorage.removeItem("user");
+        
+        if (!cancelled) {
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            try {
+              const parsedUser = JSON.parse(storedUser) as CurrentUser;
+              setUser(parsedUser);
+            } catch {
+              localStorage.removeItem("user");
+              setUser(null);
+            }
+          } else {
+            setUser(null);
           }
         }
       }
@@ -76,15 +77,22 @@ export function Navbar() {
       }
     });
 
+    const handleAuthChange = () => {
+      loadUser();
+    };
+
+    window.addEventListener("authChanged", handleAuthChange);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("authChanged", handleAuthChange);
     };
   }, []);
 
   const isLoggedIn = user !== null;
 
   const dashboardLink =
-    user?.role === "RECRUITER"
+    user?.role?.toUpperCase() === "RECRUITER"
       ? "/dashboard/recruiter"
       : "/dashboard/candidate";
 

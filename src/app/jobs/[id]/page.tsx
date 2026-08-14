@@ -52,6 +52,7 @@ export default function JobDetailsPage(){
   };
         if(jobId){
             fetchJob();
+            fetchMe();
         }
     },[jobId]);
     const handleApply = async () => {
@@ -108,19 +109,18 @@ export default function JobDetailsPage(){
                 </div>
         )}
         <div className="mt-10 flex justify-end">
-             {role === "candidate" ? (
-     <button
-      onClick={handleApply}
-      className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition duration-200"
-    >
-      Apply Now
-    </button>
-  ) : ( 
-      <button disabled className="px-6 py-3 rounded-xl font-medium border border-border text-gray-500 cursor-not-allowed"> Recruiters cannot apply</button>
-           )}
+             {role.toUpperCase() === "CANDIDATE" ? (
+      <button
+       onClick={handleApply}
+       className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition duration-200"
+     >
+       Apply Now
+     </button>
+   ) : role ? ( 
+       <button disabled className="px-6 py-3 rounded-xl font-medium border border-border text-gray-500 cursor-not-allowed"> Recruiters cannot apply</button>
+            ) : null}
         </div>
         </div>
         </div>
     );
 }
-

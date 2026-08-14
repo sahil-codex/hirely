@@ -91,7 +91,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       },
     ];
 
-    if (user.role === "CANDIDATE") {
+    if (user.role.toUpperCase() === "CANDIDATE") {
       items.push({
         href: "/dashboard/candidate",
         label: "My Applications",
@@ -99,7 +99,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       });
     }
 
-    if (user.role === "RECRUITER") {
+    if (user.role.toUpperCase() === "RECRUITER") {
       items.push({
         href: "/dashboard/recruiter",
         label: "Recruiter Dashboard",
@@ -124,6 +124,8 @@ export default function UserMenu({ user }: UserMenuProps) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("theme");
+
+      window.dispatchEvent(new Event("authChanged"));
 
       router.replace("/login");
       router.refresh();
@@ -184,12 +186,12 @@ export default function UserMenu({ user }: UserMenuProps) {
 
           <span
             className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-              user.role === "RECRUITER"
+              user.role.toUpperCase() === "RECRUITER"
                 ? "bg-violet-500/10 text-violet-400"
                 : "bg-emerald-500/10 text-emerald-400"
             }`}
           >
-            {user.role === "RECRUITER"
+            {user.role.toUpperCase() === "RECRUITER"
               ? "Recruiter"
               : "Candidate"}
           </span>
@@ -210,15 +212,17 @@ export default function UserMenu({ user }: UserMenuProps) {
           ))}
 
           {/* Saved Jobs */}
-          <Link
-            href="/saved-jobs"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-            className={itemClass}
-          >
-            <Bookmark size={18} />
-            <span>Saved Jobs</span>
-          </Link>
+          {user.role.toUpperCase() === "CANDIDATE" && (
+            <Link
+              href="/saved-jobs"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className={itemClass}
+            >
+              <Bookmark size={18} />
+              <span>Saved Jobs</span>
+            </Link>
+          )}
 
           <div className="my-2 border-t border-zinc-800" />
 
