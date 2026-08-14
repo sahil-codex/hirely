@@ -141,7 +141,6 @@ export function Navbar() {
              <NotificationMenu />
              <UserMenu user={user} />
 
-              <UserMenu user={user} />
             </>
           ) : (
             <>
