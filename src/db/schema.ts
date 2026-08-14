@@ -1,5 +1,5 @@
 
-import { pgTable,uuid,text,integer,timestamp,uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable,uuid,text,integer,timestamp,uniqueIndex,boolean } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id:uuid("id").defaultRandom().primaryKey(),
@@ -95,4 +95,31 @@ export const savedJobs = pgTable(
       "saved_jobs_user_job_idx"
     ).on(table.userId, table.jobId),
   })
+);
+
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "cascade",
+      }),
+
+    title: text("title").notNull(),
+
+    message: text("message").notNull(),
+
+    type: text("type").notNull(),
+
+    read: boolean("read")
+      .default(false)
+      .notNull(),
+
+    createdAt: timestamp("created_at")
+      .defaultNow()
+      .notNull(),
+  }
 );

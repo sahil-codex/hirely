@@ -2,7 +2,9 @@ import{
     createApplication,checkExistingApplication,
 } from "@/repositories/application.repository";
 import {getApplicationsByJob,updateApplicationsStatus,getApplicationsByUser} from "@/repositories/application.repository";
-
+import {
+  createNotificationService,
+} from "@/services/notification.service";
 export async function applyToJobService(user:any,jobId:string){
     if(user.role!=="CANDIDATE"){
         throw new Error("Only candidates can apply");
@@ -53,14 +55,36 @@ export async function updateApplicationsStatusService(
   }
 
   if (!applicationId) {
-    throw new Error("Application ID required");
+    throw new Error(
+      "Application ID required"
+    );
   }
 
-  return await updateApplicationsStatus(
-    applicationId,
-    user.userId,
-    status
-  );
+  const result =
+    await updateApplicationsStatus(
+      applicationId,
+      user.userId,
+      status
+    );
+
+  const isShortlisted =
+    status === "SHORTLISTED";
+
+  await createNotificationService({
+    userId: result.candidateId,
+
+    title: isShortlisted
+      ? "Application shortlisted"
+      : "Application update",
+
+    message: isShortlisted
+      ? "Your application has been shortlisted by the recruiter."
+      : "Your application was not selected for the next stage.",
+
+    type: "APPLICATION_STATUS",
+  });
+
+  return result.application;
 }
 
 export async function getCandidateApplicationsService(user:{userId:string,role:string;}){

@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
+import NotificationMenu from "@/components/notifications/NotificationMenu";
 
 type CurrentUser = {
   id: string;
@@ -41,7 +41,6 @@ export function Navbar() {
 
             setUser(currentUser);
 
-            // Keep localStorage in sync
             localStorage.setItem(
               "user",
               JSON.stringify(currentUser)
@@ -54,7 +53,7 @@ export function Navbar() {
         console.error("Failed to fetch current user:", error);
       }
 
-      // Fallback to localStorage
+      
       if (!cancelled) {
         const storedUser = localStorage.getItem("user");
 
@@ -139,13 +138,8 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           {isLoggedIn && user ? (
             <>
-              <button
-                type="button"
-                aria-label="Notifications"
-                className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-zinc-800"
-              >
-                <Bell size={18} />
-              </button>
+             <NotificationMenu />
+             <UserMenu user={user} />
 
               <UserMenu user={user} />
             </>

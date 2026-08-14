@@ -1,7 +1,9 @@
 import { db } from "@/lib/drizzle";
 import { applications,users,jobs,candidateProfiles} from "@/db/schema";
 import {eq,and,desc} from "drizzle-orm";
-
+import {
+  createNotificationService,
+} from "@/services/notification.service";
 
 export async function getApplicationsByJob(
   jobId: string,
@@ -89,6 +91,7 @@ export async function updateApplicationsStatus(
   const application = await db
     .select({
       applicationId: applications.id,
+       candidateId: applications.userId,
     })
     .from(applications)
     .innerJoin(
@@ -117,9 +120,11 @@ export async function updateApplicationsStatus(
     )
     .returning();
 
-  return result[0];
+  return {
+    application:result[0],
+    candidateId:application[0].candidateId,
+};
 }
-
 export async function getApplicationsByUser(userId:string){
     const result = await db
      .select({
