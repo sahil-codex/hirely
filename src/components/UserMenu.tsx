@@ -9,6 +9,7 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  Bookmark,
 } from "lucide-react";
 
 type CurrentUser = {
@@ -31,12 +32,10 @@ export default function UserMenu({ user }: UserMenuProps) {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -56,7 +55,6 @@ export default function UserMenu({ user }: UserMenuProps) {
       );
   }, []);
 
-  
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -81,7 +79,11 @@ export default function UserMenu({ user }: UserMenuProps) {
   const menuItems = useMemo(() => {
     if (!user) return [];
 
-    const items = [
+    const items: {
+      href: string;
+      label: string;
+      icon: typeof User;
+    }[] = [
       {
         href: "/profile",
         label: "My Profile",
@@ -137,10 +139,7 @@ export default function UserMenu({ user }: UserMenuProps) {
     "flex items-center gap-3 rounded-lg px-4 py-2 transition hover:bg-zinc-800 focus:bg-zinc-800 focus:outline-none";
 
   return (
-    <div
-      ref={menuRef}
-      className="relative"
-    >
+    <div ref={menuRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -209,6 +208,17 @@ export default function UserMenu({ user }: UserMenuProps) {
               <span>{label}</span>
             </Link>
           ))}
+
+          {/* Saved Jobs */}
+          <Link
+            href="/saved-jobs"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className={itemClass}
+          >
+            <Bookmark size={18} />
+            <span>Saved Jobs</span>
+          </Link>
 
           <div className="my-2 border-t border-zinc-800" />
 

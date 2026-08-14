@@ -69,3 +69,30 @@ export const candidateProfiles = pgTable(
 },
 );
 
+export const savedJobs = pgTable(
+  "saved_jobs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "cascade",
+      }),
+
+    jobId: uuid("job_id")
+      .notNull()
+      .references(() => jobs.id, {
+        onDelete: "cascade",
+      }),
+
+    createdAt: timestamp("created_at")
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    userJobUnique: uniqueIndex(
+      "saved_jobs_user_job_idx"
+    ).on(table.userId, table.jobId),
+  })
+);

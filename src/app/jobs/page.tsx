@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
+import SaveJobButton from "@/components/jobs/SaveJobButton";
 
 type Job = {
   id: string;
@@ -337,6 +338,8 @@ export default function JobsPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3 sm:flex-shrink-0">
                   {isCandidateRole(role) ? (
+                    <>
+                    <SaveJobButton jobId="{job.id}"/>
                     <button
                       type="button"
                       onClick={() => handleApply(job.id)}
@@ -344,6 +347,7 @@ export default function JobsPage() {
                     >
                       Apply
                     </button>
+                    </>
                   ) : role ? (
                     <span className="text-xs text-gray-500 px-3 py-2 border border-border rounded-xl">
                       Recruiters cannot apply
