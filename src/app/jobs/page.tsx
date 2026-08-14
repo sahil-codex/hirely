@@ -339,7 +339,7 @@ export default function JobsPage() {
                 <div className="flex flex-wrap items-center gap-3 sm:flex-shrink-0">
                   {isCandidateRole(role) ? (
                     <>
-                    <SaveJobButton jobId={'{job.id}'}/>
+                    <SaveJobButton jobId={job.id}/>
                     <button
                       type="button"
                       onClick={() => handleApply(job.id)}
