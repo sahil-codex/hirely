@@ -34,13 +34,13 @@ export default function LoginPage(){
         setError(data.error||"Login failed");
         return;
       }
-          localStorage.setItem("role", data.user.role);
+          localStorage.setItem("role", data.user.role || "");
           window.dispatchEvent(new Event("authChanged"));
           const role = data.user.role;
   
-      if(role.trim().toUpperCase()==="RECRUITER"){
+      if (role?.trim().toUpperCase() === "RECRUITER") {
         router.push("/dashboard/recruiter");
-      }else{
+      } else {
         router.push("/dashboard/candidate");
       }
       router.refresh();

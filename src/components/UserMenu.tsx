@@ -16,7 +16,7 @@ type CurrentUser = {
   id: string;
   name: string;
   email: string;
-  role: "CANDIDATE" | "RECRUITER";
+  role?: "CANDIDATE" | "RECRUITER";
 };
 
 type UserMenuProps = {
@@ -91,7 +91,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       },
     ];
 
-    if (user.role.toUpperCase() === "CANDIDATE") {
+    if (user.role?.toUpperCase() === "CANDIDATE") {
       items.push({
         href: "/dashboard/candidate",
         label: "My Applications",
@@ -99,7 +99,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       });
     }
 
-    if (user.role.toUpperCase() === "RECRUITER") {
+    if (user.role?.toUpperCase() === "RECRUITER") {
       items.push({
         href: "/dashboard/recruiter",
         label: "Recruiter Dashboard",
@@ -186,12 +186,12 @@ export default function UserMenu({ user }: UserMenuProps) {
 
           <span
             className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-              user.role.toUpperCase() === "RECRUITER"
+              user.role?.toUpperCase() === "RECRUITER"
                 ? "bg-violet-500/10 text-violet-400"
                 : "bg-emerald-500/10 text-emerald-400"
             }`}
           >
-            {user.role.toUpperCase() === "RECRUITER"
+            {user.role?.toUpperCase() === "RECRUITER"
               ? "Recruiter"
               : "Candidate"}
           </span>
@@ -212,7 +212,7 @@ export default function UserMenu({ user }: UserMenuProps) {
           ))}
 
           {/* Saved Jobs */}
-          {user.role.toUpperCase() === "CANDIDATE" && (
+          {user.role?.toUpperCase() === "CANDIDATE" && (
             <Link
               href="/saved-jobs"
               role="menuitem"

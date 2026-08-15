@@ -109,7 +109,7 @@ export default function JobDetailsPage(){
                 </div>
         )}
         <div className="mt-10 flex justify-end">
-             {role.toUpperCase() === "CANDIDATE" ? (
+             {role?.toUpperCase() === "CANDIDATE" ? (
       <button
        onClick={handleApply}
        className="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition duration-200"

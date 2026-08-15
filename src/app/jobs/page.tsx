@@ -25,8 +25,8 @@ const emptyFilters: SearchFilters = {
   skills: "",
 };
 
-function isCandidateRole(role: string) {
-  return role.trim().toUpperCase() === "CANDIDATE";
+function isCandidateRole(role?: string | null) {
+  return role?.trim().toUpperCase() === "CANDIDATE";
 }
 
 function minSalaryDigits(value: string) {
