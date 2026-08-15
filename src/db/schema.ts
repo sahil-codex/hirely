@@ -123,3 +123,33 @@ export const notifications = pgTable(
       .notNull(),
   }
 );
+
+export const recruiterProfiles = pgTable(
+  "recruiter_profiles",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .unique()
+      .references(() => users.id, {
+        onDelete: "cascade",
+      }),
+
+    headline: text("headline"),
+    bio: text("bio"),
+    location: text("location"),
+    company: text("company"),
+    jobTitle: text("job_title"),
+    companyWebsite: text("company_website"),
+    linkedinUrl: text("linkedin_url"),
+
+    createdAt: timestamp("created_at")
+      .defaultNow()
+      .notNull(),
+
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .notNull(),
+  }
+);
