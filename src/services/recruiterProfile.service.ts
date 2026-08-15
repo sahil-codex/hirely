@@ -11,7 +11,7 @@ type AuthUser = {
 };
 
 function requireRecruiter(user: AuthUser) {
-  if (user.role !== "RECRUITER") {
+  if (user.role.toUpperCase() !== "RECRUITER") {
     throw new Error(
       "Only recruiters can access recruiter profiles"
     );
