@@ -1,467 +1,483 @@
 import Link from "next/link";
 import {
-  ArrowRight,
-  Briefcase,
-  Building2,
-  CheckCircle2,
-  MapPin,
+  ArrowUpRight,
   Search,
-  Sparkles,
-  Users,
+  MapPin,
+  Briefcase,
+  Activity,
 } from "lucide-react";
 
-const popularJobs = [
+const jobs = [
   {
     title: "Backend Developer",
-    description:
-      "Build scalable APIs and backend systems.",
-    icon: "⚙️",
+    company: "Tech Company",
+    location: "Hyderabad",
+    salary: "₹60,000",
+    skills: ["Node.js", "PostgreSQL", "React"],
   },
   {
     title: "Frontend Developer",
-    description:
-      "Create modern and engaging web experiences.",
-    icon: "🎨",
+    company: "Product Startup",
+    location: "Remote",
+    salary: "₹70,000",
+    skills: ["React", "TypeScript", "Next.js"],
   },
   {
     title: "Full Stack Developer",
-    description:
-      "Work across frontend, backend and databases.",
-    icon: "🚀",
-  },
-  {
-    title: "React Developer",
-    description:
-      "Build fast and interactive React applications.",
-    icon: "⚛️",
+    company: "SaaS Company",
+    location: "Bangalore",
+    salary: "₹80,000",
+    skills: ["Next.js", "PostgreSQL", "Node.js"],
   },
 ];
 
-const steps = [
-  {
-    number: "01",
-    title: "Discover",
-    description:
-      "Search thousands of opportunities using skills, location and salary.",
-  },
-  {
-    number: "02",
-    title: "Apply",
-    description:
-      "Create your profile, upload your resume and apply with confidence.",
-  },
-  {
-    number: "03",
-    title: "Get Hired",
-    description:
-      "Track your applications and connect with companies looking for you.",
-  },
+const trending = [
+  "Backend",
+  "Frontend",
+  "Full Stack",
+  "React",
+  "Node.js",
 ];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-[#080808] text-white">
 
-      {/* ================= HERO ================= */}
+      {/* HERO */}
 
-      <section className="relative overflow-hidden">
+      <section className="border-b border-white/10">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
 
-        {/* Background glow */}
+          <div className="grid min-h-[720px] items-center gap-16 py-20 lg:grid-cols-[1.35fr_0.65fr]">
 
-        <div className="pointer-events-none absolute left-1/2 top-20 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[140px]" />
+            {/* LEFT */}
 
-        <div className="pointer-events-none absolute -left-40 top-80 h-[300px] w-[300px] rounded-full bg-violet-600/10 blur-[120px]" />
+            <div>
 
-        <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-20 lg:px-8 lg:pt-28">
+              <div className="mb-8 flex items-center gap-3 text-sm text-zinc-500">
+                <span className="flex h-2 w-2 rounded-full bg-violet-500" />
+                <span>THE MODERN JOB MARKETPLACE</span>
+              </div>
 
-          <div className="mx-auto max-w-4xl text-center">
+              <h1 className="max-w-4xl text-[clamp(4rem,8vw,8rem)] font-semibold leading-[0.88] tracking-[-0.07em]">
+                Your next
+                <br />
+                <span className="text-zinc-500">
+                  move starts
+                </span>
+                <br />
+                here.
+              </h1>
 
-            {/* Small badge */}
+              <p className="mt-10 max-w-xl text-lg leading-8 text-zinc-400">
+                Search jobs, discover companies and
+                build your next career move — without
+                getting lost in the noise.
+              </p>
 
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-300">
-              <Sparkles
-                size={15}
-                className="text-violet-400"
-              />
+              {/* SEARCH */}
 
-              Your next opportunity starts here
-            </div>
+              <form
+                action="/jobs"
+                method="GET"
+                className="mt-10 max-w-3xl"
+              >
+                <div className="flex flex-col border border-white/20 bg-white/[0.03] sm:flex-row">
 
-            {/* Heading */}
-
-            <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-              Find work that
-              <span className="block bg-gradient-to-r from-violet-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent">
-                moves you forward.
-              </span>
-            </h1>
-
-            <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-zinc-400">
-              Discover opportunities that match
-              your skills, experience and ambitions.
-              Apply to your next role without the
-              noise.
-            </p>
-
-            {/* Search */}
-
-            <form
-              action="/jobs"
-              method="GET"
-              className="mx-auto mt-10 max-w-4xl"
-            >
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-2 shadow-2xl backdrop-blur-xl">
-
-                <div className="grid gap-2 md:grid-cols-[1fr_1fr_auto]">
-
-                  {/* Job */}
-
-                  <div className="flex items-center gap-3 rounded-xl bg-black/50 px-4">
+                  <div className="flex flex-1 items-center border-b border-white/10 px-5 sm:border-b-0 sm:border-r">
                     <Search
-                      size={20}
-                      className="shrink-0 text-zinc-500"
+                      size={19}
+                      className="mr-3 text-zinc-500"
                     />
 
                     <input
                       name="keyword"
-                      placeholder="Job title or keyword"
-                      className="w-full bg-transparent py-4 text-white outline-none placeholder:text-zinc-600"
+                      placeholder="Search job title, skill..."
+                      className="w-full bg-transparent py-5 text-white outline-none placeholder:text-zinc-600"
                     />
                   </div>
 
-                  {/* Location */}
-
-                  <div className="flex items-center gap-3 rounded-xl bg-black/50 px-4">
+                  <div className="flex items-center border-b border-white/10 px-5 sm:w-52 sm:border-b-0">
                     <MapPin
-                      size={20}
-                      className="shrink-0 text-zinc-500"
+                      size={18}
+                      className="mr-3 text-zinc-500"
                     />
 
                     <input
                       name="location"
                       placeholder="Location"
-                      className="w-full bg-transparent py-4 text-white outline-none placeholder:text-zinc-600"
+                      className="w-full bg-transparent py-5 text-white outline-none placeholder:text-zinc-600"
                     />
                   </div>
 
-                  {/* Button */}
-
                   <button
                     type="submit"
-                    className="flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 font-semibold text-black transition hover:bg-zinc-200"
+                    className="flex items-center justify-center gap-2 bg-white px-7 py-5 font-medium text-black transition hover:bg-violet-400"
                   >
                     Search
-                    <ArrowRight size={18} />
+                    <ArrowUpRight size={18} />
                   </button>
 
                 </div>
+              </form>
+
+              {/* STATS */}
+
+              <div className="mt-12 flex gap-10">
+                <div>
+                  <p className="text-2xl font-semibold">
+                    1,200+
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-wider text-zinc-600">
+                    Open roles
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-2xl font-semibold">
+                    500+
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-wider text-zinc-600">
+                    Companies
+                  </p>
+                </div>
               </div>
-            </form>
 
-            <div className="mt-5 flex flex-wrap justify-center gap-3 text-sm text-zinc-500">
-              <span>Popular:</span>
-
-              <Link
-                href="/jobs?keyword=React"
-                className="transition hover:text-white"
-              >
-                React
-              </Link>
-
-              <span>•</span>
-
-              <Link
-                href="/jobs?keyword=Node.js"
-                className="transition hover:text-white"
-              >
-                Node.js
-              </Link>
-
-              <span>•</span>
-
-              <Link
-                href="/jobs?keyword=Backend"
-                className="transition hover:text-white"
-              >
-                Backend
-              </Link>
-
-              <span>•</span>
-
-              <Link
-                href="/jobs?keyword=Frontend"
-                className="transition hover:text-white"
-              >
-                Frontend
-              </Link>
-            </div>
-          </div>
-
-          {/* ================= STATS ================= */}
-
-          <div className="mx-auto mt-20 grid max-w-4xl grid-cols-1 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] sm:grid-cols-3">
-
-            <div className="flex flex-col items-center gap-1 border-b border-white/10 p-7 sm:border-b-0 sm:border-r">
-              <span className="text-3xl font-bold">
-                1,200+
-              </span>
-
-              <span className="text-sm text-zinc-500">
-                Job Opportunities
-              </span>
             </div>
 
-            <div className="flex flex-col items-center gap-1 border-b border-white/10 p-7 sm:border-b-0 sm:border-r">
-              <span className="text-3xl font-bold">
-                500+
-              </span>
+            {/* RIGHT — LIVE JOB BOARD */}
 
-              <span className="text-sm text-zinc-500">
-                Companies
-              </span>
-            </div>
+            <div className="relative hidden lg:block">
 
-            <div className="flex flex-col items-center gap-1 p-7">
-              <span className="text-3xl font-bold">
-                10k+
-              </span>
+              <div className="absolute -inset-10 bg-violet-500/[0.04] blur-3xl" />
 
-              <span className="text-sm text-zinc-500">
-                Candidates
-              </span>
+              <div className="relative border border-white/10 bg-[#0d0d0f]">
+
+                <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+
+                  <div className="flex items-center gap-3">
+                    <Activity
+                      size={16}
+                      className="text-violet-400"
+                    />
+
+                    <span className="text-sm font-medium">
+                      LIVE JOBS
+                    </span>
+                  </div>
+
+                  <span className="text-xs text-zinc-600">
+                    UPDATED NOW
+                  </span>
+
+                </div>
+
+                <div className="p-6">
+
+                  <div className="mb-8">
+                    <p className="text-xs uppercase tracking-wider text-zinc-600">
+                      New opportunities
+                    </p>
+
+                    <p className="mt-2 text-4xl font-semibold tracking-tight">
+                      24
+                    </p>
+
+                    <p className="mt-1 text-sm text-zinc-500">
+                      jobs added today
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+
+                    {jobs.slice(0, 2).map((job, index) => (
+                      <Link
+                        key={job.title}
+                        href="/jobs"
+                        className="group block border border-white/10 p-5 transition hover:border-violet-500/40 hover:bg-white/[0.03]"
+                      >
+
+                        <div className="flex justify-between gap-4">
+
+                          <div>
+                            <p className="font-medium">
+                              {job.title}
+                            </p>
+
+                            <p className="mt-2 text-sm text-zinc-500">
+                              {job.company}
+                            </p>
+                          </div>
+
+                          <ArrowUpRight
+                            size={17}
+                            className="text-zinc-600 transition group-hover:text-violet-400"
+                          />
+
+                        </div>
+
+                        <div className="mt-5 flex items-center gap-4 text-xs text-zinc-500">
+                          <span className="flex items-center gap-1">
+                            <MapPin size={13} />
+                            {job.location}
+                          </span>
+
+                          <span>
+                            {job.salary}
+                          </span>
+                        </div>
+
+                      </Link>
+                    ))}
+
+                  </div>
+
+                  <Link
+                    href="/jobs"
+                    className="mt-5 flex items-center justify-between border-t border-white/10 pt-5 text-sm text-zinc-400 hover:text-white"
+                  >
+                    View all opportunities
+
+                    <ArrowUpRight size={16} />
+                  </Link>
+
+                </div>
+              </div>
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* ================= POPULAR JOBS ================= */}
+      {/* TRENDING */}
 
-      <section className="border-t border-white/5 bg-zinc-950/50">
-        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
+      <section className="border-b border-white/10">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
 
-          <div className="mb-12 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="flex flex-col gap-6 py-7 lg:flex-row lg:items-center">
+
+            <span className="shrink-0 text-xs font-medium uppercase tracking-[0.2em] text-zinc-600">
+              Trending roles
+            </span>
+
+            <div className="flex flex-wrap gap-2">
+              {trending.map((item) => (
+                <Link
+                  key={item}
+                  href={`/jobs?keyword=${encodeURIComponent(
+                    item
+                  )}`}
+                  className="border border-white/10 px-4 py-2 text-sm text-zinc-400 transition hover:border-violet-500/40 hover:text-white"
+                >
+                  {item}
+                </Link>
+              ))}
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* JOB DISCOVERY */}
+
+      <section>
+        <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-10">
+
+          <div className="grid gap-20 lg:grid-cols-[0.35fr_1fr]">
+
+            {/* SIDE TITLE */}
 
             <div>
-              <p className="mb-3 text-sm font-medium uppercase tracking-wider text-violet-400">
-                Explore opportunities
+              <p className="text-xs uppercase tracking-[0.2em] text-violet-400">
+                Find your fit
               </p>
 
-              <h2 className="text-3xl font-bold sm:text-4xl">
-                Find your kind of work
+              <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight">
+                Opportunities
+                <br />
+                worth your
+                <br />
+                attention.
               </h2>
 
-              <p className="mt-3 max-w-xl text-zinc-500">
-                Explore some of the most popular roles
-                candidates are looking for.
-              </p>
-            </div>
-
-            <Link
-              href="/jobs"
-              className="flex items-center gap-2 text-sm font-medium text-zinc-300 transition hover:text-white"
-            >
-              View all jobs
-              <ArrowRight size={17} />
-            </Link>
-
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-            {popularJobs.map((job) => (
-              <Link
-                key={job.title}
-                href={`/jobs?keyword=${encodeURIComponent(
-                  job.title
-                )}`}
-                className="group rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition duration-200 hover:-translate-y-1 hover:border-violet-500/30 hover:bg-white/[0.05]"
-              >
-
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-xl">
-                  {job.icon}
-                </div>
-
-                <h3 className="text-lg font-semibold">
-                  {job.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-zinc-500">
-                  {job.description}
-                </p>
-
-                <div className="mt-6 flex items-center gap-1 text-sm text-zinc-400 transition group-hover:text-violet-400">
-                  Explore
-                  <ArrowRight
-                    size={15}
-                    className="transition group-hover:translate-x-1"
-                  />
-                </div>
-
-              </Link>
-            ))}
-
-          </div>
-        </div>
-      </section>
-
-      {/* ================= HOW IT WORKS ================= */}
-
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-
-          <div className="mx-auto max-w-2xl text-center">
-
-            <p className="mb-3 text-sm font-medium uppercase tracking-wider text-violet-400">
-              Simple by design
-            </p>
-
-            <h2 className="text-3xl font-bold sm:text-4xl">
-              From searching to hired
-            </h2>
-
-            <p className="mt-4 text-zinc-500">
-              Everything you need to take the next
-              step in your career.
-            </p>
-
-          </div>
-
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-
-            {steps.map((step) => (
-              <div
-                key={step.number}
-                className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8"
-              >
-
-                <span className="text-sm font-semibold text-violet-400">
-                  {step.number}
-                </span>
-
-                <h3 className="mt-5 text-xl font-semibold">
-                  {step.title}
-                </h3>
-
-                <p className="mt-3 leading-7 text-zinc-500">
-                  {step.description}
-                </p>
-
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FOR RECRUITERS ================= */}
-
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-violet-500/10 via-indigo-500/5 to-transparent p-8 sm:p-12">
-
-            <div className="relative z-10 max-w-2xl">
-
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
-                <Building2 size={23} />
-              </div>
-
-              <h2 className="text-3xl font-bold sm:text-4xl">
-                Hiring your next great
-                teammate?
-              </h2>
-
-              <p className="mt-4 leading-7 text-zinc-400">
-                Create a job, discover candidates and
-                manage applications from one place.
+              <p className="mt-6 max-w-xs text-sm leading-6 text-zinc-600">
+                A few roles from the Hirely
+                marketplace. Search all available
+                positions to find yours.
               </p>
 
               <Link
-                href="/dashboard"
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
+                href="/jobs"
+                className="mt-8 inline-flex items-center gap-2 border-b border-white/30 pb-2 text-sm"
               >
-                Start hiring
-                <ArrowRight size={17} />
+                Explore all jobs
+                <ArrowUpRight size={15} />
               </Link>
+            </div>
+
+            {/* JOB LIST */}
+
+            <div className="border-t border-white/10">
+
+              {jobs.map((job, index) => (
+                <Link
+                  key={job.title}
+                  href="/jobs"
+                  className="group grid gap-5 border-b border-white/10 py-8 transition hover:px-4 hover:bg-white/[0.02] md:grid-cols-[60px_1fr_auto]"
+                >
+
+                  <span className="text-sm text-zinc-700">
+                    0{index + 1}
+                  </span>
+
+                  <div>
+
+                    <h3 className="text-xl font-medium transition group-hover:text-violet-400">
+                      {job.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm text-zinc-600">
+                      {job.company}
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {job.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="border border-white/10 px-3 py-1 text-xs text-zinc-500"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                  </div>
+
+                  <div className="flex flex-col items-start justify-between md:items-end">
+
+                    <span className="text-sm text-zinc-400">
+                      {job.salary} / year
+                    </span>
+
+                    <span className="mt-4 flex items-center gap-1 text-sm text-zinc-600 transition group-hover:text-white">
+                      View role
+                      <ArrowUpRight size={15} />
+                    </span>
+
+                  </div>
+
+                </Link>
+              ))}
 
             </div>
 
-            {/* Decorative icons */}
-
-            <div className="pointer-events-none absolute -right-10 -top-10 hidden h-64 w-64 rounded-full border border-violet-400/10 sm:block" />
-
-            <div className="pointer-events-none absolute -bottom-20 -right-20 hidden h-80 w-80 rounded-full bg-violet-500/10 blur-3xl sm:block" />
-
           </div>
-
         </div>
       </section>
 
-      {/* ================= FINAL CTA ================= */}
+      {/* HOW IT WORKS */}
 
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-4xl px-6 py-28 text-center">
+      <section className="border-y border-white/10 bg-[#0b0b0c]">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 lg:px-10">
 
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10">
-            <Briefcase
-              size={26}
-              className="text-violet-400"
-            />
+          <div className="grid gap-16 lg:grid-cols-[0.7fr_1.3fr]">
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-violet-400">
+                The Hirely way
+              </p>
+
+              <h2 className="mt-5 text-4xl font-semibold tracking-tight">
+                Less searching.
+                <br />
+                More moving.
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-3">
+
+              {[
+                [
+                  "01",
+                  "Discover",
+                  "Find roles using the skills, location and salary that matter to you.",
+                ],
+                [
+                  "02",
+                  "Apply",
+                  "Keep your profile ready and apply without repeating yourself.",
+                ],
+                [
+                  "03",
+                  "Move forward",
+                  "Track your applications and know where you stand.",
+                ],
+              ].map(([number, title, description]) => (
+                <div
+                  key={number}
+                  className="border-t border-white/10 p-6 first:md:border-l"
+                >
+                  <span className="text-xs text-violet-400">
+                    {number}
+                  </span>
+
+                  <h3 className="mt-12 text-lg font-medium">
+                    {title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-6 text-zinc-600">
+                    {description}
+                  </p>
+                </div>
+              ))}
+
+            </div>
+
           </div>
+        </div>
+      </section>
 
-          <h2 className="text-4xl font-bold sm:text-5xl">
-            Your next opportunity
-            is out there.
-          </h2>
+      {/* FINAL CTA */}
 
-          <p className="mx-auto mt-5 max-w-xl text-zinc-500">
-            Stop scrolling endlessly. Find the role
-            that actually fits you.
+      <section>
+        <div className="mx-auto max-w-[1400px] px-6 py-32 text-center lg:px-10">
+
+          <p className="text-xs uppercase tracking-[0.25em] text-violet-400">
+            Ready?
           </p>
+
+          <h2 className="mx-auto mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">
+            Don't just find a job.
+            <span className="text-zinc-600">
+              {" "}
+              find what's next.
+            </span>
+          </h2>
 
           <Link
             href="/jobs"
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 font-semibold text-black transition hover:bg-zinc-200"
+            className="mt-10 inline-flex items-center gap-3 bg-white px-7 py-4 font-medium text-black transition hover:bg-violet-400"
           >
-            Explore Jobs
-            <ArrowRight size={18} />
+            Explore jobs
+            <ArrowUpRight size={18} />
           </Link>
 
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
+      {/* FOOTER */}
 
-      <footer className="border-t border-white/5">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-zinc-600 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+      <footer className="border-t border-white/10">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-8 lg:px-10">
 
-          <span>
-            © {new Date().getFullYear()} Hirely
+          <span className="text-sm font-semibold">
+            Hirely
           </span>
 
-          <div className="flex gap-5">
-            <Link
-              href="/jobs"
-              className="hover:text-zinc-300"
-            >
-              Jobs
-            </Link>
-
-            <Link
-              href="/dashboard"
-              className="hover:text-zinc-300"
-            >
-              Dashboard
-            </Link>
-
-            <Link
-              href="/profile"
-              className="hover:text-zinc-300"
-            >
-              Profile
-            </Link>
-          </div>
+          <span className="text-xs text-zinc-700">
+            Find what's next.
+          </span>
 
         </div>
       </footer>
