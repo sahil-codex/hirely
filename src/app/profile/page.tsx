@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ProfileHero from "@/components/profile/profileHero";
 import ProfileProgress from "src/components/profile/ProfileProgress";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 type Profile = {
   fullName: string;
   headline?: string;
@@ -20,6 +21,7 @@ type Profile = {
 };
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile>({
     fullName: "",
     headline: "",
@@ -49,11 +51,15 @@ export default function ProfilePage() {
           credentials: "include",
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to load profile");
-        }
+        const data = await res.json().catch(() => ({}));
 
-        const data = await res.json();
+        if (!res.ok) {
+          if (data.error === "Only candidates can access profiles") {
+            router.replace("/profile/recruiter");
+            return;
+          }
+          throw new Error(data.error || "Failed to load profile");
+        }
 
         if (data.profile) {
           setProfile((prev) => ({
@@ -73,7 +79,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, []);
+  }, [router]);
 
   const handleSave = async () => {
     try {

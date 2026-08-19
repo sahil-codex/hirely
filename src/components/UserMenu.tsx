@@ -85,7 +85,7 @@ export default function UserMenu({ user }: UserMenuProps) {
       icon: typeof User;
     }[] = [
       {
-        href: "/profile",
+        href: user.role?.toUpperCase() === "RECRUITER" ? "/profile/recruiter" : "/profile",
         label: "My Profile",
         icon: User,
       },
