@@ -3,7 +3,6 @@ import {
   ArrowUpRight,
   Search,
   MapPin,
-  Briefcase,
   Activity,
 } from "lucide-react";
 
@@ -190,10 +189,10 @@ export default function HomePage() {
 
                   <div className="space-y-3">
 
-                    {jobs.slice(0, 2).map((job, index) => (
+                    {jobs.slice(0, 2).map((job) => (
                       <Link
                         key={job.title}
-                        href="/jobs"
+                        href={`/jobs?keyword=${encodeURIComponent(job.title)}`}
                         className="group block border border-white/10 p-5 transition hover:border-violet-500/40 hover:bg-white/[0.03]"
                       >
 
@@ -323,7 +322,7 @@ export default function HomePage() {
               {jobs.map((job, index) => (
                 <Link
                   key={job.title}
-                  href="/jobs"
+                  href={`/jobs?keyword=${encodeURIComponent(job.title)}`}
                   className="group grid gap-5 border-b border-white/10 py-8 transition hover:px-4 hover:bg-white/[0.02] md:grid-cols-[60px_1fr_auto]"
                 >
 
@@ -448,10 +447,10 @@ export default function HomePage() {
           </p>
 
           <h2 className="mx-auto mt-6 max-w-4xl text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">
-            Don't just find a job.
+            Don&apos;t just find a job.
             <span className="text-zinc-600">
               {" "}
-              find what's next.
+              find what&apos;s next.
             </span>
           </h2>
 
@@ -476,7 +475,7 @@ export default function HomePage() {
           </span>
 
           <span className="text-xs text-zinc-700">
-            Find what's next.
+            Find what&apos;s next.
           </span>
 
         </div>

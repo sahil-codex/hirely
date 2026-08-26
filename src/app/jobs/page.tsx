@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, FormEvent } from "react";
+import { useCallback, useEffect, useState, FormEvent, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import SaveJobButton from "@/components/jobs/SaveJobButton";
 
 type Job = {
@@ -39,7 +40,8 @@ function formatMinSalaryInput(value: string) {
   return Number(digits).toLocaleString("en-IN");
 }
 
-export default function JobsPage() {
+function JobsSearchContent() {
+  const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -127,6 +129,24 @@ export default function JobsPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const keyword = searchParams.get("keyword") || "";
+    const location = searchParams.get("location") || "";
+    const minSalary = searchParams.get("minSalary") || "";
+    const skills = searchParams.get("skills") || "";
+
+    if (keyword || location || minSalary || skills) {
+      const initialFilters = {
+        keyword,
+        location,
+        minSalary: formatMinSalaryInput(minSalary),
+        skills,
+      };
+      setFilters(initialFilters);
+      runSearch(initialFilters);
+    }
+  }, [searchParams, runSearch]);
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -366,5 +386,23 @@ export default function JobsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center gap-3 py-12 text-gray-400">
+          <div
+            className="w-8 h-8 border-2 border-gray-700 border-t-primary rounded-full animate-spin"
+            aria-hidden
+          />
+          <p className="text-sm">Loading search...</p>
+        </div>
+      }
+    >
+      <JobsSearchContent />
+    </Suspense>
   );
 }
